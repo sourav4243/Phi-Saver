@@ -25,23 +25,23 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       )}
     >
       {!isUser && (
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="bg-green-700 text-white">Phi</AvatarFallback>
+        <Avatar className="h-10 w-10">
+          <AvatarFallback className="bg-green-700 text-white text-sm">Phi</AvatarFallback>
         </Avatar>
       )}
 
       <div
         className={cn(
-          "rounded-lg px-3 py-2 max-w-[80%]",
+          "rounded-lg px-4 py-3 max-w-[85%] shadow-md",
           isUser
             ? "bg-green-600 text-white"
-            : "bg-gray-800 text-gray-100"
+            : "bg-gray-800 text-gray-100 border border-gray-700"
         )}
       >
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <p className="text-sm md:text-base whitespace-pre-wrap leading-relaxed">{message.content}</p>
         <div
           className={cn(
-            "text-xs mt-1",
+            "text-xs mt-2",
             isUser ? "text-green-100" : "text-gray-400"
           )}
         >
@@ -53,8 +53,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       </div>
 
       {isUser && (
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="bg-green-500 text-white">You</AvatarFallback>
+        <Avatar className="h-10 w-10">
+          <AvatarFallback className="bg-green-500 text-white text-sm">You</AvatarFallback>
         </Avatar>
       )}
     </div>

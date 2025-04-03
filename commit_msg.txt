@@ -1,0 +1,1 @@
+Restore ChatButton and Footer in layout

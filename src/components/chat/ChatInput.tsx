@@ -24,22 +24,22 @@ export default function ChatInput({ onSendMessage, disabled = false }: ChatInput
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 border-t border-gray-800 p-4 bg-gray-900"
+      className="flex items-center gap-3 border-t border-gray-800 p-4 bg-gray-900"
     >
       <Input
         placeholder="Type your message..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         disabled={disabled}
-        className="flex-1 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
+        className="flex-1 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 h-11 text-base px-4"
       />
       <Button
         type="submit"
         size="icon"
         disabled={disabled || !message.trim()}
-        className="bg-green-600 hover:bg-green-700"
+        className="bg-green-600 hover:bg-green-700 h-11 w-11"
       >
-        <SendIcon className="h-4 w-4" />
+        <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send message</span>
       </Button>
     </form>

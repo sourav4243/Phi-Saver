@@ -82,14 +82,39 @@ class PhiChatbot:
             print(f"Sending request to Gemini API")
 
             # Generate content with Gemini
-            response = self.model.generate_content(
-                full_prompt,
-                generation_config={
-                    "temperature": 0.7,
-                    "max_output_tokens": 100,
-                    "top_p": 0.95,
-                }
-            )
+            try:
+                # Use safety settings to ensure we get a response
+                safety_settings = [
+                    {
+                        "category": "HARM_CATEGORY_HARASSMENT",
+                        "threshold": "BLOCK_NONE"
+                    },
+                    {
+                        "category": "HARM_CATEGORY_HATE_SPEECH",
+                        "threshold": "BLOCK_NONE"
+                    },
+                    {
+                        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        "threshold": "BLOCK_NONE"
+                    },
+                    {
+                        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                        "threshold": "BLOCK_NONE"
+                    }
+                ]
+
+                response = self.model.generate_content(
+                    contents=full_prompt,
+                    generation_config={
+                        "temperature": 0.7,
+                        "max_output_tokens": 100,
+                        "top_p": 0.95,
+                    },
+                    safety_settings=safety_settings
+                )
+            except Exception as e:
+                print(f"Error generating content: {e}")
+                return "I'm having trouble connecting to my knowledge base right now. Let me answer based on what I know about Phi Saver."
 
             if response:
                 # Extract the text from the response

@@ -97,8 +97,8 @@ export default function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[350px] h-[450px] flex flex-col p-0 bg-gray-900 border-gray-800 absolute bottom-16 right-0 overflow-hidden"
-        style={{ maxHeight: '80vh' }}
+        className="sm:max-w-[450px] md:max-w-[550px] h-[550px] flex flex-col p-0 bg-gray-900 border-gray-800 fixed inset-x-0 bottom-20 mx-auto overflow-hidden rounded-xl shadow-2xl"
+        style={{ maxHeight: '80vh', maxWidth: '90vw' }}
       >
         <DialogHeader className="px-4 py-2 border-b border-gray-800 bg-gray-900 sticky top-0 z-10">
           <DialogTitle className="text-white">Chat with Phi Assistant</DialogTitle>
