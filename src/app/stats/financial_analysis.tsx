@@ -16,8 +16,11 @@ import { format } from "date-fns";
 import dynamic from 'next/dynamic';
 import { useTheme } from "next-themes";
 
-// Import echarts dynamically to prevent SSR issues
-const echarts = dynamic(() => import('@/lib/echarts'), { ssr: false });
+// Import the EChartsWrapper component with SSR disabled
+const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] bg-gray-800/20 animate-pulse rounded-md"></div>
+});
 
 export const FinancialAnalysis = () => {
   return (
