@@ -33,24 +33,42 @@ export default function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   // Scroll to bottom when messages change
   useEffect(() => {
     const scrollToBottom = () => {
+      console.log('Attempting to scroll to bottom');
       const scrollAnchor = document.getElementById('scroll-anchor');
       if (scrollAnchor) {
-        scrollAnchor.scrollIntoView({ behavior: 'smooth' });
-      } else if (scrollAreaRef.current) {
+        try {
+          scrollAnchor.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          console.log('Scrolled using anchor');
+        } catch (e) {
+          console.error('Error scrolling with anchor:', e);
+        }
+      }
+
+      // Always try the direct method as a backup
+      if (scrollAreaRef.current) {
         const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
         if (scrollContainer) {
-          setTimeout(() => {
-            scrollContainer.scrollTop = scrollContainer.scrollHeight;
-          }, 100); // Small delay to ensure content is rendered
+          try {
+            setTimeout(() => {
+              scrollContainer.scrollTop = scrollContainer.scrollHeight;
+              console.log('Scrolled using container, height:', scrollContainer.scrollHeight);
+            }, 100); // Small delay to ensure content is rendered
+          } catch (e) {
+            console.error('Error scrolling with container:', e);
+          }
         }
       }
     };
 
-    // Scroll immediately and then again after a delay to ensure it works
+    // Scroll immediately and then again after delays to ensure it works
     scrollToBottom();
-    const timeoutId = setTimeout(scrollToBottom, 200);
+    const timeoutId1 = setTimeout(scrollToBottom, 200);
+    const timeoutId2 = setTimeout(scrollToBottom, 500);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId1);
+      clearTimeout(timeoutId2);
+    };
   }, [messages, isLoading]);
 
   const handleSendMessage = async (content: string) => {
@@ -97,8 +115,7 @@ export default function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[450px] md:max-w-[550px] h-[550px] flex flex-col p-0 bg-gray-900 border-gray-800 fixed inset-x-0 bottom-20 mx-auto overflow-hidden rounded-xl shadow-2xl"
-        style={{ maxHeight: '80vh', maxWidth: '90vw' }}
+        className="sm:max-w-[450px] md:max-w-[550px] h-[500px] flex flex-col p-0 bg-gray-900 border-gray-800 rounded-xl shadow-2xl"
       >
         <DialogHeader className="px-4 py-2 border-b border-gray-800 bg-gray-900 sticky top-0 z-10">
           <DialogTitle className="text-white">Chat with Phi Assistant</DialogTitle>
@@ -107,7 +124,7 @@ export default function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
         <ScrollArea
           className="flex-1 p-4 bg-gray-900 overflow-y-auto"
           ref={scrollAreaRef}
-          style={{ scrollBehavior: 'smooth' }}
+          style={{ scrollBehavior: 'smooth', overflowY: 'auto' }}
         >
           <div className="flex flex-col gap-4">
             {messages.map((message) => (
@@ -126,7 +143,12 @@ export default function ChatDialog({ open, onOpenChange }: ChatDialogProps) {
             <div id="scroll-anchor" ref={(el) => {
               if (el && scrollAreaRef.current) {
                 setTimeout(() => {
-                  el.scrollIntoView({ behavior: 'smooth' });
+                  try {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    console.log('Scrolled to bottom');
+                  } catch (e) {
+                    console.error('Error scrolling:', e);
+                  }
                 }, 100);
               }
             }}></div>
