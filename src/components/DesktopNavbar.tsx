@@ -7,21 +7,22 @@ export default function DesktopNavbar() {
     <div className="flex items-center space-x-6">
       <Link
         href="/"
-        className="text-sm font-medium text-foreground/60 transition-colors hover:text-foreground"
+        className="text-sm font-medium text-white transition-colors hover:text-white"
       >
         Home
       </Link>
       <Link
         href="/contact"
-        className="text-sm font-medium text-foreground/60 transition-colors hover:text-foreground"
+        className="text-sm font-medium text-white transition-colors hover:text-white"
       >
         Contact
       </Link>
 
-      <SignInButton mode="modal">
+
+      <SignInButton mode="modal" forceRedirectUrl={"/dashboard"}>
         <Button
           variant="outline"
-          className="ml-4 border-white/20 text-white hover:bg-white/10"
+          className="bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-lg text-white"
         >
           Sign In
         </Button>

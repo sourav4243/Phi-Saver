@@ -40,31 +40,27 @@ function PhiModel({ followMouse = true }: PhiModelProps) {
     }
   });
 
-  return (
-    <group ref={group} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]}>
-      {/* Green circular background */}
-      <mesh position={[0, 0, -0.1]}>
-        <circleGeometry args={[1.2, 64]} />
-        <meshStandardMaterial color="#004d00" side={THREE.DoubleSide} />
-      </mesh>
+return (
+  <group ref={group} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]}>
+    {/* Green circular background */}
+    {/* <mesh position={[0, 0, -0.1]}>
+      <circleGeometry args={[1.2, 64]} />
+      <meshStandardMaterial color="#004d00" side={THREE.DoubleSide} />
+    </mesh> */}
 
-      {/* Phi shape */}
-      <mesh position={[0, 0.2, 0]}>
-        <torusGeometry args={[0.5, 0.12, 16, 32, Math.PI * 1.6]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
+    {/* Circular part of phi (almost a full circle, slight gap for aesthetics) */}
+    <mesh position={[0, 0, 0]}>
+      <torusGeometry args={[0.5, 0.12, 16, 64, Math.PI * 1.80]} />
+      <meshStandardMaterial color="#32cd32" />
+    </mesh>
 
-      <mesh position={[-0.3, -0.15, 0]} rotation={[0, 0, -0.3]}>
-        <cylinderGeometry args={[0.12, 0.12, 1.6, 16]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
-
-      <mesh position={[0, -0.8, 0]}>
-        <cylinderGeometry args={[0.17, 0.08, 0.4, 16]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
-    </group>
-  );
+    {/* Vertical stroke passing through center */}
+    <mesh position={[-0.36, 0, 0]} rotation={[0,0,Math.PI / 2]}>
+      <cylinderGeometry args={[0.12, 0.12, 1.8, 16]} />
+      <meshStandardMaterial color="#32cd32" />
+    </mesh>
+  </group>
+);
 }
 
 export default function PhiScene() {
