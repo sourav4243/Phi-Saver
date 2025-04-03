@@ -19,6 +19,7 @@ A gamified savings application designed to encourage millennials and Gen Z to bu
 - **Next.js**: Framework for building the application.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **shadcn**: Component library for building accessible and customizable UI.
+- **Flask**: manages all backend
 
 ## Getting Started
 
