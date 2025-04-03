@@ -5,13 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/themeprovider";
 import Navbar from "@/components/Navbar";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import dynamic from 'next/dynamic';
-
-// Import ChatButton with client-side only rendering
-const ChatButton = dynamic(() => import('@/components/chat/ChatButton'), { ssr: false });
-
-// Import Footer
-const Footer = dynamic(() => import('@/components/Footer').then(mod => ({ default: mod.Footer })), { ssr: false });
+import { ClientOnly, ChatButton, Footer } from '@/components/ClientOnly';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,13 +49,16 @@ export default function RootLayout({
               </main>
             </SignedOut>
 
-            {/* Chat Button */}
-            <ChatButton />
+            {/* Client-side only components */}
+            <ClientOnly>
+              {/* Chat Button */}
+              <ChatButton />
 
-            {/* Footer */}
-            <SignedIn>
-              <Footer />
-            </SignedIn>
+              {/* Footer - only for signed in users */}
+              <SignedIn>
+                <Footer />
+              </SignedIn>
+            </ClientOnly>
           </ThemeProvider>
         </body>
       </html>
