@@ -2,9 +2,12 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-from chatbot import chatbot
 
+# Load environment variables first
 load_dotenv()
+
+# Import chatbot after loading environment variables
+from chatbot import chatbot
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -63,4 +66,7 @@ def chat():
     return jsonify(response)
 
 if __name__ == '__main__':
+    # Print environment variables for debugging (without showing sensitive values)
+    print(f"HUGGINGFACE_API_KEY set: {'Yes' if 'HUGGINGFACE_API_KEY' in os.environ else 'No'}")
+
     app.run(debug=True, port=5000)

@@ -22,7 +22,7 @@ A gamified savings application designed to encourage millennials and Gen Z to bu
 - **shadcn**: Component library for building accessible and customizable UI.
 - **Flask**: Manages all backend functionality.
 - **SQLite**: Database for storing user data.
-- **Hugging Face API**: Free AI service for powering the chatbot.
+- **Google Gemini API**: Free AI service for powering the chatbot.
 
 ## Getting Started
 
@@ -58,8 +58,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Set up environment variables
-cp .env.example .env
-# Edit .env and add your Hugging Face API key (get one for free at https://huggingface.co/settings/tokens)
+# Create a .env file with your Gemini API key
+# Get one for free at https://aistudio.google.com/app/apikey
 
 # Run the server
 python app.py
@@ -99,7 +99,7 @@ The chatbot appears as a floating button in the bottom right corner of the appli
 You can customize the chatbot by:
 
 1. Adding more FAQs in `backend/chatbot.py`
-2. Using a different Hugging Face model by changing the `hf_api_url` in `backend/chatbot.py`
+2. Adjusting the Gemini model settings in the `_query_gemini` method in `backend/chatbot.py`
 3. Styling the chat interface in the components under `src/components/chat/`
 
 ## Learn More
@@ -107,7 +107,7 @@ You can customize the chatbot by:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [shadcn Documentation](https://shadcn.dev)
-- [Hugging Face API](https://huggingface.co/docs/api-inference/index)
+- [Google Gemini API](https://ai.google.dev/docs/gemini_api_overview)
 
 ## Deploy on Vercel
 

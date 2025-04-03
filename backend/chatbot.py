@@ -1,19 +1,36 @@
 import os
-import json
-import requests
 from typing import Dict, List, Any
+from dotenv import load_dotenv
+import google.generativeai as genai
 
-# This implementation uses both rule-based responses and the Hugging Face Inference API
-# Hugging Face offers a free tier for text generation models
+# Load environment variables from .env file
+load_dotenv()
+
+# This implementation uses both rule-based responses and the Google Gemini API
+# Gemini offers a free tier with generous limits
 
 class PhiChatbot:
     def __init__(self):
         self.faqs = self._load_faqs()
-        # Hugging Face API settings
-        self.hf_api_url = "https://api-inference.huggingface.co/models/google/flan-t5-small"
-        # In a production app, you would store this in an environment variable
-        self.hf_api_key = os.environ.get("HUGGINGFACE_API_KEY", "")
-        self.headers = {"Authorization": f"Bearer {self.hf_api_key}"} if self.hf_api_key else {}
+        # Google Gemini API settings
+        self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+
+        # Debug output to verify the API key
+        if self.gemini_api_key:
+            # Only show first few characters for security
+            masked_key = self.gemini_api_key[:4] + "*" * (len(self.gemini_api_key) - 4) if len(self.gemini_api_key) > 4 else "***"
+            print(f"Gemini API key loaded successfully: {masked_key}")
+
+            # Configure the Gemini API
+            genai.configure(api_key=self.gemini_api_key)
+
+            # Set up the model
+            self.model = genai.GenerativeModel('gemini-1.0-pro')
+            print("Gemini model initialized successfully")
+        else:
+            print("WARNING: No Gemini API key found in environment variables!")
+            print("Please make sure you have created a .env file with your GEMINI_API_KEY.")
+            self.model = None
 
     def _load_faqs(self) -> List[Dict[str, str]]:
         """Load FAQs from a JSON file or define them inline"""
@@ -53,29 +70,45 @@ class PhiChatbot:
             }
         ]
 
-    def _query_huggingface(self, prompt: str) -> str:
-        """Query the Hugging Face API for a response"""
+    def _query_gemini(self, prompt: str) -> str:
+        """Query the Google Gemini API for a response"""
         try:
-            if not self.hf_api_key:
+            if not self.model:
+                print("No Gemini model available")
                 return ""
 
             # Prepare the prompt with context about Phi Saver
-            full_prompt = f"""You are Phi, an AI assistant for Phi Saver, a gamified savings app.
-            Answer this question about personal finance or the app: {prompt}"""
+            full_prompt = f"You are Phi, an AI assistant for Phi Saver, a gamified savings app. Keep your response concise (max 2 sentences). Question: {prompt}"
+            print(f"Sending request to Gemini API")
 
-            # Make the API request
-            response = requests.post(
-                self.hf_api_url,
-                headers=self.headers,
-                json={"inputs": full_prompt, "parameters": {"max_length": 100}}
+            # Generate content with Gemini
+            response = self.model.generate_content(
+                full_prompt,
+                generation_config={
+                    "temperature": 0.7,
+                    "max_output_tokens": 100,
+                    "top_p": 0.95,
+                }
             )
 
-            if response.status_code == 200:
-                return response.json()[0]["generated_text"]
+            if response:
+                # Extract the text from the response
+                response_text = response.text
+                print(f"Gemini response: {response_text[:50]}...")
+
+                # Limit to 150 characters max for conciseness
+                if len(response_text) > 150:
+                    sentences = response_text.split('.')
+                    if len(sentences) > 1:
+                        return sentences[0].strip() + '.'
+                    else:
+                        return response_text[:150].strip() + '...'
+                return response_text.strip()
             else:
+                print("Empty response from Gemini")
                 return ""
         except Exception as e:
-            print(f"Error querying Hugging Face API: {e}")
+            print(f"Error querying Gemini API: {e}")
             return ""
 
     def get_response(self, user_message: str) -> Dict[str, Any]:
@@ -132,14 +165,30 @@ class PhiChatbot:
                 "message": "Streaks are one of the most powerful features in Phi Saver. By maintaining daily savings habits, you build streaks that earn you bonus rewards and help solidify good financial behavior."
             }
 
-        # Try to get a response from Hugging Face API
-        ai_response = self._query_huggingface(user_message)
+        # Try to get a response from Gemini API
+        ai_response = self._query_gemini(user_message)
         if ai_response:
             return {"message": ai_response}
 
+        # Fallback responses based on keywords if API fails
+        if "invest" in user_message or "investment" in user_message:
+            return {
+                "message": "Investing is a great way to grow your wealth over time. Phi Saver can help you set aside money regularly for your investment goals. Would you like some basic investment tips for beginners?"
+            }
+
+        if "budget" in user_message:
+            return {
+                "message": "Creating a budget is the foundation of good financial health. Phi Saver helps you track your expenses and income to maintain a balanced budget. Have you set up your monthly budget goals yet?"
+            }
+
+        if "debt" in user_message:
+            return {
+                "message": "Managing debt is an important part of financial wellness. Phi Saver can help you allocate funds toward debt repayment and track your progress. Would you like some tips on debt management strategies?"
+            }
+
         # Default response if all else fails
         return {
-            "message": "I'm not sure I understand. Could you rephrase your question? You can ask about savings goals, expense tracking, leveling up, or streaks."
+            "message": "I'm not sure I understand. Could you rephrase your question? You can ask about savings goals, expense tracking, leveling up, streaks, investments, budgeting, or debt management."
         }
 
 # Create a singleton instance
