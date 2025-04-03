@@ -13,14 +13,16 @@ A gamified savings application designed to encourage millennials and Gen Z to bu
 - **Motivational Insights**: See what you can buy with your savings.
 - **Savings Challenges**: Compete with friends in savings challenges.
 - **Future Projections**: Visualize your future savings with charts.
+- **AI Chatbot**: Get help and answers to your questions through our intelligent assistant.
 
 ## Tech Stack
 
 - **Next.js**: Framework for building the application.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **shadcn**: Component library for building accessible and customizable UI.
-- **Flask**: manages all backend.
+- **Flask**: Manages all backend functionality.
 - **SQLite**: Database for storing user data.
+- **Hugging Face API**: Free AI service for powering the chatbot.
 
 ## Getting Started
 
@@ -32,6 +34,8 @@ cd savings-app
 npm install
 ```
 
+### Frontend
+
 Run the development server:
 
 ```bash
@@ -40,23 +44,73 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
+### Backend
+
+Set up the backend server:
+
+```bash
+cd backend
+# Create a virtual environment (optional but recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env and add your Hugging Face API key (get one for free at https://huggingface.co/settings/tokens)
+
+# Run the server
+python app.py
+```
+
+The backend will run on [http://localhost:5000](http://localhost:5000).
+
 ## Folder Structure
 
 ```plaintext
-src/
-├── components/       # Reusable UI components
-├── pages/            # Application pages
-├── styles/           # Global and component-specific styles
-├── utils/            # Utility functions
-├── types/            # TypeScript types and interfaces
+├── src/                  # Frontend code
+│   ├── app/              # Next.js app router pages
+│   ├── components/       # Reusable UI components
+│   │   ├── chat/         # Chat components
+│   │   ├── landing/      # Landing page components
+│   │   └── ui/           # UI components
+│   ├── lib/              # Utility functions and API
+│   └── types/            # TypeScript types
+│
+├── backend/              # Flask backend
+│   ├── app.py            # Main Flask application
+│   ├── chatbot.py        # Chatbot implementation
+│   └── requirements.txt  # Python dependencies
 ```
+
+## AI Chatbot
+
+The application includes an AI-powered chatbot that can answer user questions about the app and personal finance. The chatbot uses:
+
+1. **Rule-based responses** for common questions about the app
+2. **Hugging Face API** for more complex or open-ended questions
+
+The chatbot appears as a floating button in the bottom right corner of the application and is available on all pages.
+
+### Customizing the Chatbot
+
+You can customize the chatbot by:
+
+1. Adding more FAQs in `backend/chatbot.py`
+2. Using a different Hugging Face model by changing the `hf_api_url` in `backend/chatbot.py`
+3. Styling the chat interface in the components under `src/components/chat/`
 
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [shadcn Documentation](https://shadcn.dev)
+- [Hugging Face API](https://huggingface.co/docs/api-inference/index)
 
 ## Deploy on Vercel
 
 Deploy your app using the [Vercel Platform](https://vercel.com/). Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+For the backend, you can deploy to platforms like Heroku, Railway, or any other service that supports Python applications.

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+from chatbot import chatbot
 
 load_dotenv()
 
@@ -50,5 +51,16 @@ def update_savings():
     # Here you would implement actual savings update logic
     return jsonify({'status': 'success', 'message': 'Savings updated successfully'})
 
+# Chat endpoint
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_message = data.get('message', '')
+
+    # Get response from chatbot
+    response = chatbot.get_response(user_message)
+
+    return jsonify(response)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000) 
+    app.run(debug=True, port=5000)
