@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import dynamic from 'next/dynamic';
 import { ExpenseDialog } from './expense-dialog';
+import { SavingsDialog } from './savings-dialog';
 
 // Import the EChartsWrapper component with SSR disabled
 const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'), {
@@ -20,6 +21,7 @@ const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'
 export default function Dashboard() {
   const { theme } = useTheme();
   const [showExpenseDialog, setShowExpenseDialog] = useState(false);
+  const [showSavingsDialog, setShowSavingsDialog] = useState(false);
 
   // Create chart options
   const chartOptions = {
@@ -143,7 +145,10 @@ export default function Dashboard() {
                     <i className="fas fa-plus-circle mr-2"></i>
                     Log Expense
                   </Button>
-                  <Button className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-sm">
+                  <Button 
+                    className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-sm"
+                    onClick={() => setShowSavingsDialog(true)}
+                  >
                     <i className="fas fa-plus-circle mr-2"></i>
                     Add Savings
                   </Button>
@@ -242,6 +247,12 @@ export default function Dashboard() {
         <ExpenseDialog 
           open={showExpenseDialog} 
           onOpenChange={setShowExpenseDialog} 
+        />
+
+        {/* Savings Dialog */}
+        <SavingsDialog 
+          open={showSavingsDialog} 
+          onOpenChange={setShowSavingsDialog} 
         />
       </main>
     </div>
