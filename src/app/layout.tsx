@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/themeprovider";
 import Navbar from "@/components/Navbar";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,10 +36,17 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="min-h-screen">
-              <Navbar />
-              {children}
-            </div>
+            <Navbar />
+            <SignedIn>
+              <main className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-950">
+                {children}
+              </main>
+            </SignedIn>
+            <SignedOut>
+              <main className="min-h-screen bg-black">
+                {children}
+              </main>
+            </SignedOut>
           </ThemeProvider>
         </body>
       </html>

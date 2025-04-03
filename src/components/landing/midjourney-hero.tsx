@@ -87,7 +87,7 @@ export function MidJourneyHero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <SignInButton mode="modal" afterSignInUrl="/dashboard">
+              <SignInButton mode="modal">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-lg text-white"
