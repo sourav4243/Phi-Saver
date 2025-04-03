@@ -7,11 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import * as echarts from 'echarts';
+import dynamic from 'next/dynamic';
 import { useTheme } from "next-themes";
 
+// Import echarts dynamically to prevent SSR issues
+const echarts = dynamic(() => import('@/lib/echarts'), { ssr: false });
+
 export default function Dashboard() {
-  const [chartInstance, setChartInstance] = useState<echarts.ECharts | null>(null);
+  const [chartInstance, setChartInstance] = useState<any>(null);
   const { theme } = useTheme();
 
   useEffect(() => {

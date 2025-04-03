@@ -13,8 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import * as echarts from 'echarts';
+import dynamic from 'next/dynamic';
 import { useTheme } from "next-themes";
+
+// Import echarts dynamically to prevent SSR issues
+const echarts = dynamic(() => import('@/lib/echarts'), { ssr: false });
 
 export const FinancialAnalysis = () => {
   return (
