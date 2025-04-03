@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const FinancialAnalysis = dynamic(() => import('@/app/dashboard/financial_analysis').then(mod => ({ default: mod.FinancialAnalysis })), {
+const FinancialAnalysis = dynamic(() => import('@/app/stats/financial_analysis').then(mod => ({ default: mod.FinancialAnalysis })), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen bg-black flex items-center justify-center">
@@ -13,4 +13,4 @@ const FinancialAnalysis = dynamic(() => import('@/app/dashboard/financial_analys
 
 export default function StatsPage() {
   return <FinancialAnalysis />;
-} 
+}

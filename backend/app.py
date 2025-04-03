@@ -3,7 +3,11 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
+# Load environment variables first
 load_dotenv()
+
+# Import chatbot after loading environment variables
+from chatbot import chatbot
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -50,5 +54,19 @@ def update_savings():
     # Here you would implement actual savings update logic
     return jsonify({'status': 'success', 'message': 'Savings updated successfully'})
 
+# Chat endpoint
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_message = data.get('message', '')
+
+    # Get response from chatbot
+    response = chatbot.get_response(user_message)
+
+    return jsonify(response)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000) 
+    # Print environment variables for debugging (without showing sensitive values)
+    print(f"HUGGINGFACE_API_KEY set: {'Yes' if 'HUGGINGFACE_API_KEY' in os.environ else 'No'}")
+
+    app.run(debug=True, port=5000)

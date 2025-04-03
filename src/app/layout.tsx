@@ -5,7 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/themeprovider";
 import Navbar from "@/components/Navbar";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { Footer } from '@/components/Footer'
+import { ClientOnly, ChatButton, Footer } from '@/components/ClientOnly';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +30,6 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          />
-        </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <ThemeProvider
             attribute="class"
@@ -48,13 +42,23 @@ export default function RootLayout({
               <main className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-950">
                 {children}
               </main>
-              <Footer />
             </SignedIn>
             <SignedOut>
               <main className="min-h-screen bg-black">
                 {children}
               </main>
             </SignedOut>
+
+            {/* Client-side only components */}
+            <ClientOnly>
+              {/* Chat Button */}
+              <ChatButton />
+
+              {/* Footer - only for signed in users */}
+              <SignedIn>
+                <Footer />
+              </SignedIn>
+            </ClientOnly>
           </ThemeProvider>
         </body>
       </html>

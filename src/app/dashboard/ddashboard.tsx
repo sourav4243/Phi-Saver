@@ -7,121 +7,102 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import * as echarts from 'echarts';
 import { useTheme } from "next-themes";
+import dynamic from 'next/dynamic';
+
+// Import the EChartsWrapper component with SSR disabled
+const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] bg-gray-800/20 animate-pulse rounded-md"></div>
+});
 
 export default function Dashboard() {
-  const [chartInstance, setChartInstance] = useState<echarts.ECharts | null>(null);
   const { theme } = useTheme();
 
-  useEffect(() => {
-    // Initialize financial chart
-    const chartDom = document.getElementById('financial-chart');
-    if (chartDom) {
-      const myChart = echarts.init(chartDom);
-      setChartInstance(myChart);
-
-      const updateChart = () => {
-        const option = {
-          animation: false,
-          tooltip: {
-            trigger: 'axis',
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-            axisLine: {
-              lineStyle: {
-                color: theme === 'dark' ? '#6b7280' : '#d1d5db'
-              }
-            },
-            axisLabel: {
-              color: theme === 'dark' ? '#e5e7eb' : '#374151'
-            }
-          },
-          yAxis: {
-            type: 'value',
-            min: 0,
-            max: 4000,
-            interval: 1000,
-            axisLine: {
-              lineStyle: {
-                color: theme === 'dark' ? '#6b7280' : '#d1d5db'
-              }
-            },
-            axisLabel: {
-              color: theme === 'dark' ? '#e5e7eb' : '#374151'
-            },
-            splitLine: {
-              lineStyle: {
-                color: theme === 'dark' ? 'rgba(107, 114, 128, 0.2)' : 'rgba(209, 213, 219, 0.5)'
-              }
-            }
-          },
-          series: [
-            {
-              name: 'Savings',
-              type: 'line',
-              data: [800, 1200, 1600, 2100, 2700, 3200, 3500],
-              itemStyle: {
-                color: '#10b981'
-              },
-              lineStyle: {
-                width: 3
-              },
-              areaStyle: {
-                color: {
-                  type: 'linear',
-                  x: 0,
-                  y: 0,
-                  x2: 0,
-                  y2: 1,
-                  colorStops: [{
-                    offset: 0, color: theme === 'dark' ? 'rgba(16, 185, 129, 0.5)' : 'rgba(16, 185, 129, 0.4)'
-                  }, {
-                    offset: 1, color: theme === 'dark' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.1)'
-                  }]
-                }
-              },
-            },
-            {
-              name: 'Projected',
-              type: 'line',
-              data: [null, null, null, null, 2700, 3400, 4000],
-              lineStyle: {
-                type: 'dashed',
-                width: 2,
-                color: '#10b981'
-              },
-              symbol: 'circle',
-              symbolSize: 6
-            }
-          ]
-        };
-        myChart.setOption(option);
-      };
-
-      updateChart();
-
-      // Handle window resize
-      window.addEventListener('resize', () => {
-        myChart.resize();
-      });
-    }
-
-    return () => {
-      if (chartInstance) {
-        chartInstance.dispose();
+  // Create chart options
+  const chartOptions = {
+    animation: false,
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      axisLine: {
+        lineStyle: {
+          color: theme === 'dark' ? '#6b7280' : '#d1d5db'
+        }
+      },
+      axisLabel: {
+        color: theme === 'dark' ? '#e5e7eb' : '#374151'
       }
-    };
-  }, [theme]);
+    },
+    yAxis: {
+      type: 'value',
+      min: 0,
+      max: 4000,
+      interval: 1000,
+      axisLine: {
+        lineStyle: {
+          color: theme === 'dark' ? '#6b7280' : '#d1d5db'
+        }
+      },
+      axisLabel: {
+        color: theme === 'dark' ? '#e5e7eb' : '#374151'
+      },
+      splitLine: {
+        lineStyle: {
+          color: theme === 'dark' ? 'rgba(107, 114, 128, 0.2)' : 'rgba(209, 213, 219, 0.5)'
+        }
+      }
+    },
+    series: [
+      {
+        name: 'Savings',
+        type: 'line',
+        data: [800, 1200, 1600, 2100, 2700, 3200, 3500],
+        itemStyle: {
+          color: '#10b981'
+        },
+        lineStyle: {
+          width: 3
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0, color: theme === 'dark' ? 'rgba(16, 185, 129, 0.5)' : 'rgba(16, 185, 129, 0.4)'
+            }, {
+              offset: 1, color: theme === 'dark' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.1)'
+            }]
+          }
+        },
+      },
+      {
+        name: 'Projected',
+        type: 'line',
+        data: [null, null, null, null, 2700, 3400, 4000],
+        lineStyle: {
+          type: 'dashed',
+          width: 2,
+          color: '#10b981'
+        },
+        symbol: 'circle',
+        symbolSize: 6
+      }
+    ]
+  };
 
   return (
     <div className="min-h-[1024px]">
@@ -208,7 +189,7 @@ export default function Dashboard() {
                 <CardTitle className="text-white">Financial Progress</CardTitle>
               </CardHeader>
               <CardContent>
-                <div id="financial-chart" className="w-full h-[300px] sm:h-[400px]" />
+                <EChartsWrapper option={chartOptions} className="w-full h-[300px] sm:h-[400px]" />
               </CardContent>
             </Card>
           </div>
