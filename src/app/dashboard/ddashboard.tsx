@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import dynamic from 'next/dynamic';
+import { ExpenseDialog } from './expense-dialog';
 
 // Import the EChartsWrapper component with SSR disabled
 const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'), {
@@ -18,6 +19,7 @@ const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'
 
 export default function Dashboard() {
   const { theme } = useTheme();
+  const [showExpenseDialog, setShowExpenseDialog] = useState(false);
 
   // Create chart options
   const chartOptions = {
@@ -105,8 +107,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-[1024px]">
-      <main className="max-w-[1440px] mx-auto">
+    <div className="min-h-screen pt-16 pb-24">
+      <main className="max-w-[1440px] mx-auto px-2 sm:px-4">
         {/* User Level Card */}
         <Card className="mb-6 shadow-sm bg-black/50 border-green-500/20">
           <CardContent className="p-4 sm:p-6">
@@ -133,7 +135,11 @@ export default function Dashboard() {
                   ₹2,700 Saved
                 </Badge>
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                  <Button variant="outline" className="flex-1 sm:flex-none border-green-500/20 text-white hover:bg-green-500/10 text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 sm:flex-none border-green-500/20 text-white hover:bg-green-500/10 text-sm"
+                    onClick={() => setShowExpenseDialog(true)}
+                  >
                     <i className="fas fa-plus-circle mr-2"></i>
                     Log Expense
                   </Button>
@@ -231,6 +237,12 @@ export default function Dashboard() {
             </Card>
           </div>
         </div>
+
+        {/* Expense Dialog */}
+        <ExpenseDialog 
+          open={showExpenseDialog} 
+          onOpenChange={setShowExpenseDialog} 
+        />
       </main>
     </div>
   );
