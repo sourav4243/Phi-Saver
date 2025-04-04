@@ -8,7 +8,7 @@ interface PhiModelProps {
   followMouse?: boolean;
 }
 
-function PhiModel({ followMouse = true }: PhiModelProps) {
+export function PhiModel({ followMouse = true }: PhiModelProps) {
   const group = useRef<THREE.Group>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
@@ -40,28 +40,27 @@ function PhiModel({ followMouse = true }: PhiModelProps) {
     }
   });
 
-return (
-  <group ref={group} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]} rotation={[Math.PI,Math.PI,3*Math.PI/2]}>
-    {/* Green circular background */}
-    {/* <mesh position={[0, 0, -0.1]}>
-      <circleGeometry args={[1.2, 64]} />
-      <meshStandardMaterial color="#004d00" side={THREE.DoubleSide} />
-    </mesh> */}
+  return (
+    <group ref={group} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]} rotation={[Math.PI,Math.PI,3*Math.PI/2]}>
+      {/* Green circular background */}
+      {/* <mesh position={[0, 0, -0.1]}>
+        <circleGeometry args={[1.2, 64]} />
+        <meshStandardMaterial color="#004d00" side={THREE.DoubleSide} />
+      </mesh> */}
 
-{/* Circular part of phi (almost a full circle, slight gap for aesthetics) */}
-<mesh position={[0, 0, 0]}>
-  <torusGeometry args={[0.5, 0.15, 32, 128, Math.PI * 1.70]} /> 
-  <meshStandardMaterial color="#32cd32" flatShading={false} metalness={0.1} roughness={0.6} />
-</mesh>
+      {/* Circular part of phi (almost a full circle, slight gap for aesthetics) */}
+      <mesh position={[0, 0, 0]}>
+        <torusGeometry args={[0.5, 0.15, 32, 128, Math.PI * 1.70]} /> 
+        <meshStandardMaterial color="#32cd32" flatShading={false} metalness={0.1} roughness={0.6} />
+      </mesh>
 
-{/* Vertical stroke passing through center */}
-<mesh position={[-0.35, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-  <cylinderGeometry args={[0.15, 0.15, 1.8, 32]} />
-  <meshStandardMaterial color="#32cd32" flatShading={false} metalness={0.1} roughness={0.6} />
-</mesh>
-
-  </group>
-);
+      {/* Vertical stroke passing through center */}
+      <mesh position={[-0.35, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.15, 0.15, 1.8, 32]} />
+        <meshStandardMaterial color="#32cd32" flatShading={false} metalness={0.1} roughness={0.6} />
+      </mesh>
+    </group>
+  );
 }
 
 export default function PhiScene() {
