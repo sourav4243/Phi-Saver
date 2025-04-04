@@ -36,24 +36,24 @@ export default function SettingsPage() {
   const [goalNotifications, setGoalNotifications] = useState(true);
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8 text-center dark:text-white">Settings</h1>
+    <div className="container mx-auto pt-20 pb-10 px-4 max-w-4xl">
+      <h1 className="text-3xl font-bold mb-8 text-center text-white">Settings</h1>
       
       <div className="grid gap-8">
         {/* Appearance Settings */}
         <Card className="dark:bg-black/50 border-green-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-green-500">
               <Sun className="h-5 w-5 text-green-500" />
               <span>Appearance</span>
             </CardTitle>
-            <CardDescription>Customize how Phi Saver looks</CardDescription>
+            <CardDescription className="text-white/80">Customize how Phi Saver looks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Theme</Label>
-                <p className="text-sm text-muted-foreground">
+                <Label className="text-green-400">Theme</Label>
+                <p className="text-sm text-white/70">
                   Select light, dark, or system theme
                 </p>
               </div>
@@ -65,17 +65,17 @@ export default function SettingsPage() {
         {/* Notification Settings */}
         <Card className="dark:bg-black/50 border-green-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-green-500">
               <Bell className="h-5 w-5 text-green-500" />
               <span>Notifications</span>
             </CardTitle>
-            <CardDescription>Manage your notification preferences</CardDescription>
+            <CardDescription className="text-white/80">Manage your notification preferences</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="notifications">Push Notifications</Label>
-                <p className="text-sm text-muted-foreground">
+                <Label htmlFor="notifications" className="text-green-400">Push Notifications</Label>
+                <p className="text-sm text-white/70">
                   Receive notifications about your savings goals and achievements
                 </p>
               </div>
@@ -88,8 +88,8 @@ export default function SettingsPage() {
             
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="email-notifications">Email Notifications</Label>
-                <p className="text-sm text-muted-foreground">
+                <Label htmlFor="email-notifications" className="text-green-400">Email Notifications</Label>
+                <p className="text-sm text-white/70">
                   Receive email updates about your account
                 </p>
               </div>
@@ -108,13 +108,13 @@ export default function SettingsPage() {
                   setMarketingEmails(checked === true)
                 } 
               />
-              <Label htmlFor="marketing" className="text-sm">
+              <Label htmlFor="marketing" className="text-sm text-green-400">
                 Receive marketing emails with tips and offers
               </Label>
             </div>
             
             <div className="space-y-3">
-              <Label>Reminder Settings</Label>
+              <Label className="text-green-400">Reminder Settings</Label>
               <div className="flex flex-col space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox 
@@ -124,7 +124,7 @@ export default function SettingsPage() {
                       setSavingsReminders(checked === true)
                     } 
                   />
-                  <Label htmlFor="savings-reminders" className="text-sm">
+                  <Label htmlFor="savings-reminders" className="text-sm text-green-400">
                     Savings reminders
                   </Label>
                 </div>
@@ -136,7 +136,7 @@ export default function SettingsPage() {
                       setExpenseReminders(checked === true)
                     } 
                   />
-                  <Label htmlFor="expense-reminders" className="text-sm">
+                  <Label htmlFor="expense-reminders" className="text-sm text-green-400">
                     Expense tracking reminders
                   </Label>
                 </div>
@@ -148,7 +148,7 @@ export default function SettingsPage() {
                       setGoalNotifications(checked === true)
                     } 
                   />
-                  <Label htmlFor="goal-notifications" className="text-sm">
+                  <Label htmlFor="goal-notifications" className="text-sm text-green-400">
                     Goal achievement notifications
                   </Label>
                 </div>
@@ -160,11 +160,11 @@ export default function SettingsPage() {
         {/* Currency Settings */}
         <Card className="dark:bg-black/50 border-green-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-green-500">
               <CreditCard className="h-5 w-5 text-green-500" />
               <span>Currency</span>
             </CardTitle>
-            <CardDescription>Set your preferred currency</CardDescription>
+            <CardDescription className="text-white/80">Set your preferred currency</CardDescription>
           </CardHeader>
           <CardContent>
             <RadioGroup 
@@ -174,19 +174,19 @@ export default function SettingsPage() {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="inr" id="inr" />
-                <Label htmlFor="inr">Indian Rupee (₹)</Label>
+                <Label htmlFor="inr" className="text-green-400">Indian Rupee (₹)</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="usd" id="usd" />
-                <Label htmlFor="usd">US Dollar ($)</Label>
+                <Label htmlFor="usd" className="text-green-400">US Dollar ($)</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="eur" id="eur" />
-                <Label htmlFor="eur">Euro (€)</Label>
+                <Label htmlFor="eur" className="text-green-400">Euro (€)</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="gbp" id="gbp" />
-                <Label htmlFor="gbp">British Pound (£)</Label>
+                <Label htmlFor="gbp" className="text-green-400">British Pound (£)</Label>
               </div>
             </RadioGroup>
           </CardContent>
@@ -195,23 +195,23 @@ export default function SettingsPage() {
         {/* Account Settings */}
         <Card className="dark:bg-black/50 border-green-500/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-green-500">
               <UserCircle className="h-5 w-5 text-green-500" />
               <span>Account</span>
             </CardTitle>
-            <CardDescription>Manage your account settings</CardDescription>
+            <CardDescription className="text-white/80">Manage your account settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
-              <Button variant="outline" className="justify-start">
+              <Button variant="outline" className="justify-start text-green-400">
                 <UserCircle className="mr-2 h-4 w-4" />
                 Edit Profile
               </Button>
-              <Button variant="outline" className="justify-start">
+              <Button variant="outline" className="justify-start text-green-400">
                 <Lock className="mr-2 h-4 w-4" />
                 Change Password
               </Button>
-              <Button variant="outline" className="justify-start">
+              <Button variant="outline" className="justify-start text-green-400">
                 <HelpCircle className="mr-2 h-4 w-4" />
                 Help & Support
               </Button>
@@ -225,7 +225,7 @@ export default function SettingsPage() {
       </div>
       
       <div className="mt-8 text-center">
-        <Button className="bg-green-500 hover:bg-green-600">Save Changes</Button>
+        <Button className="bg-green-500 hover:bg-green-600 text-white">Save Changes</Button>
       </div>
     </div>
   );
