@@ -130,11 +130,11 @@ export default function Dashboard() {
               <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
                 <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/20 flex items-center py-1 sm:py-2 px-2 sm:px-3 text-sm">
                   <i className="fas fa-fire mr-2 text-amber-400"></i>
-                  28 Day Streak
+                  7 Day Streak
                 </Badge>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 flex items-center py-1 sm:py-2 px-2 sm:px-3 text-sm">
                   <i className="fas fa-piggy-bank mr-2 text-green-400"></i>
-                  ₹2,700 Saved
+                  ₹700 Saved
                 </Badge>
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                   <Button 
@@ -168,15 +168,15 @@ export default function Dashboard() {
                   <h3 className="text-lg font-bold text-white">Today's Saving Goal</h3>
                   <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 flex items-center py-1 px-2 text-sm">
                     <i className="fas fa-calendar-day mr-2 text-green-400"></i>
-                    Apr 3, 2025
+                    Apr 4, 2025
                   </Badge>
                 </div>
-                <p className="text-gray-400 mb-3">Save ₹15 today to keep your streak going!</p>
+                <p className="text-gray-400 mb-3">Save ₹50 today to keep your streak going!</p>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-white">₹10 / ₹15</span>
-                  <span className="text-gray-400">67% Complete</span>
+                  <span className="font-medium text-white">₹10 / ₹50</span>
+                  <span className="text-gray-400">20% Complete</span>
                 </div>
-                <Progress value={67} className="h-4 mb-6" />
+                <Progress value={20} className="h-4 mb-6" />
                 <div className="bg-green-500/10 p-3 sm:p-4 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-green-500/20">
                   <div className="flex items-center">
                     <div className="bg-green-500/20 p-3 rounded-full mr-4 hidden sm:block">

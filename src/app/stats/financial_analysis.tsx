@@ -27,13 +27,13 @@ export function FinancialAnalysis() {
       <main className="max-w-[1440px] mx-auto px-2 sm:px-4">
         {/* Header Controls */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold">Financial Statistics</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Financial Statistics</h1>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <Select defaultValue="month">
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Select time range" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className='text-sm font-bold'>
                 <SelectItem value="day">Day</SelectItem>
                 <SelectItem value="week">Week</SelectItem>
                 <SelectItem value="month">Month</SelectItem>
