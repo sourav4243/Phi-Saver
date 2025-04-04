@@ -1,17 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { 
-  User,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  onAuthStateChanged
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useUser, useClerk } from "@clerk/nextjs";
 
 interface AuthContextType {
-  user: User | null;
+  user: any | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -25,22 +18,20 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    if (isLoaded) {
       setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
+    }
+  }, [isLoaded]);
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      // Redirect to Clerk's OAuth page
+      window.location.href = "/sign-in?oauth=google";
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
@@ -48,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await signOut();
     } catch (error) {
       console.error("Error signing out:", error);
     }
