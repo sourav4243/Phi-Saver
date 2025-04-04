@@ -4,8 +4,6 @@
 import Link from "next/link";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
-import { useEffect, useState } from "react";
-import Image from "next/image";
 
 function Navbar() {
   return (

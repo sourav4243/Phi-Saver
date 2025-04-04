@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Sparkles, Shield } from "lucide-react"
 import { SignInButton } from "@clerk/nextjs"
 
 export function CallToAction() {

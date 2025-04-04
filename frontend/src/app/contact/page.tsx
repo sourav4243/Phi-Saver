@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Mail, Phone, MapPin } from "lucide-react";
+import { MessageCircle, Mail, Phone } from "lucide-react";
 import { useState } from "react";
 
 export default function ContactPage() {
@@ -29,7 +29,7 @@ export default function ContactPage() {
           Get in Touch
         </h1>
         <p className="text-xl text-center mb-12 text-gray-300">
-          Have questions about Phi Saver? We're here to help!
+          Have questions about Phi Saver? We&apos;re here to help!
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
@@ -74,13 +74,13 @@ export default function ContactPage() {
           <CardHeader>
             <CardTitle className="text-white">Send us a message</CardTitle>
             <CardDescription className="text-gray-300">
-              Fill out the form below and we'll get back to you as soon as possible.
+              Fill out the form below and we&apos;ll get back to you as soon as possible.
             </CardDescription>
           </CardHeader>
           <CardContent>
             {formSubmitted ? (
               <div className="bg-green-500/20 text-green-300 p-4 rounded-md text-center">
-                Thank you for your message! We'll get back to you soon.
+                Thank you for your message! We&apos;ll get back to you soon.
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">

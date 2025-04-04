@@ -15,9 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { 
   Bell, 
-  Moon, 
   Sun, 
-  Smartphone, 
   Lock, 
   UserCircle, 
   CreditCard, 

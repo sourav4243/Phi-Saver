@@ -3,18 +3,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 interface EChartsWrapperProps {
-  option: any;
+  option: Record<string, unknown>;
   style?: React.CSSProperties;
   className?: string;
 }
 
 const EChartsWrapper: React.FC<EChartsWrapperProps> = ({ option, style, className }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<any>(null);
+  const [chart, setChart] = useState<echarts.ECharts | null>(null);
 
   useEffect(() => {
-    let echarts: any = null;
-    let chartInstance: any = null;
+    let echarts: typeof import('echarts') | null = null;
+    let chartInstance: echarts.ECharts | null = null;
 
     // Only run on client-side
     if (typeof window !== 'undefined' && chartRef.current) {
@@ -60,7 +60,7 @@ const EChartsWrapper: React.FC<EChartsWrapperProps> = ({ option, style, classNam
         }
       }
     };
-  }, [option]);
+  }, [option, chart]);
 
   // Update chart when option changes
   useEffect(() => {

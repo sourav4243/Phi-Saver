@@ -6,44 +6,6 @@ import { Target, Award, Trophy, TrendingUp, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 
-interface StepProps {
-  number: number
-  icon: React.ReactNode
-  title: string
-  description: string
-  progress: number
-}
-
-function Step({ number, icon, title, description, progress }: StepProps) {
-  return (
-    <div className="relative">
-      {/* Step number */}
-      <div className="hidden md:flex absolute -left-4 top-0 w-8 h-8 rounded-full bg-pink-500 text-white items-center justify-center font-bold z-10">
-        {number}
-      </div>
-
-      {/* Mobile step number */}
-      <div className="md:hidden flex w-8 h-8 rounded-full bg-pink-500 text-white items-center justify-center font-bold mb-4">
-        {number}
-      </div>
-
-      <div className="bg-white rounded-lg p-6 shadow-md relative z-0">
-        <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mb-4">{icon}</div>
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
-
-        {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-gradient-to-r from-pink-500 to-purple-600 h-2 rounded-full transition-all duration-1000 ease-out"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0)
 
@@ -54,27 +16,6 @@ export function HowItWorks() {
 
     return () => clearInterval(interval)
   }, [])
-
-  const steps = [
-    {
-      icon: <Target className="h-6 w-6 text-pink-500" />,
-      title: "Sign Up & Set a Goal",
-      description: "Choose how much you want to save and set your personal savings target.",
-      progress: activeStep >= 0 ? 100 : 0,
-    },
-    {
-      icon: <Award className="h-6 w-6 text-pink-500" />,
-      title: "Start Saving & Play Streaks",
-      description: "Earn rewards while saving money. Keep your streak going for bonus rewards!",
-      progress: activeStep >= 1 ? 100 : 0,
-    },
-    {
-      icon: <Trophy className="h-6 w-6 text-pink-500" />,
-      title: "Win Rewards & Level Up",
-      description: "Unlock bonuses and grow wealth. Level up your financial journey!",
-      progress: activeStep >= 2 ? 100 : 0,
-    },
-  ]
 
   return (
     <section className="py-16 bg-white" id="how-it-works">

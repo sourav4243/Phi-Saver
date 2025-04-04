@@ -125,7 +125,7 @@ export function Testimonials() {
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [nextSlide])
 
   return (
     <section id="testimonials" className="py-20 bg-white">
@@ -133,7 +133,7 @@ export function Testimonials() {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Users Say</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Join thousands of happy savers who've transformed their financial habits
+            Join thousands of happy savers who&apos;ve transformed their financial habits
           </p>
         </div>
 
