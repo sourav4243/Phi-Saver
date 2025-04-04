@@ -1,5 +1,11 @@
 const API_BASE_URL = 'http://localhost:5000/api';
 
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
 export const fetchDashboardData = async () => {
   const response = await fetch(`${API_BASE_URL}/dashboard`);
   if (!response.ok) {
@@ -49,3 +55,7 @@ export const sendChatMessage = async (message: string) => {
   }
   return response.json();
 };
+
+export async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
+  // ... existing code ...
+}

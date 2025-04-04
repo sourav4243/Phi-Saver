@@ -3,8 +3,6 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
@@ -198,6 +196,7 @@ export default function Dashboard() {
             <Card className="shadow-sm bg-black/50 border-green-500/20">
               <CardHeader>
                 <CardTitle className="text-white">Financial Progress</CardTitle>
+                <CardDescription className="text-gray-400">Track your savings journey</CardDescription>
               </CardHeader>
               <CardContent>
                 <EChartsWrapper option={chartOptions} className="w-full h-[300px] sm:h-[400px]" />

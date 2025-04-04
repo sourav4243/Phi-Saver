@@ -8,18 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import dynamic from 'next/dynamic';
-import { useTheme } from "next-themes";
-
-// Import the EChartsWrapper component with SSR disabled
-const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'), {
-  ssr: false,
-  loading: () => <div className="w-full h-[400px] bg-gray-800/20 animate-pulse rounded-md"></div>
-});
 
 export function FinancialAnalysis() {
-  const { theme } = useTheme();
-
   return (
     <div className="min-h-screen pt-16 pb-24">
       <main className="max-w-[1440px] mx-auto px-2 sm:px-4">

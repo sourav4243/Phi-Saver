@@ -2,16 +2,14 @@
 
 import type React from "react"
 
-import { Target, Award, Trophy, TrendingUp, Sparkles } from "lucide-react"
-import { useEffect, useState } from "react"
+import { Target, Trophy, TrendingUp, Sparkles } from "lucide-react"
+import { useEffect } from "react"
 import { Card } from "@/components/ui/card"
 
 export function HowItWorks() {
-  const [activeStep, setActiveStep] = useState(0)
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % 3)
+      // Auto-scroll logic here if needed
     }, 3000)
 
     return () => clearInterval(interval)
