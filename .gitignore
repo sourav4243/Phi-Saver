@@ -9,6 +9,9 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+/frontend/node_modules
+/frontend/.clerk
+/frontend/.next
 
 # testing
 /coverage
@@ -44,4 +47,4 @@ next-env.d.ts
 # clerk configuration (can include secrets)
 /.clerk/
 
-__pycache__/
+/backend/__pycache__
