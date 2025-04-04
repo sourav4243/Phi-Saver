@@ -1,4 +1,4 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from "next/server";
 
 // Set the paths that don't require authentication
@@ -11,18 +11,26 @@ const isPublic = (path: string) => {
   });
 };
 
-export default clerkMiddleware((auth, request) => {
+// Create a matcher for protected routes
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/stats(.*)', '/settings(.*)']);
+
+export default clerkMiddleware(async (auth, request) => {
   const path = request.nextUrl.pathname;
+  const { userId, redirectToSignIn } = await auth();
 
   // If the path is public, allow access
   if (isPublic(path)) {
+    // If user is signed in and trying to access the landing page,
+    // redirect them to the dashboard
+    if (userId && path === "/") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
     return NextResponse.next();
   }
 
-  // If user is signed in and trying to access the landing page,
-  // redirect them to the dashboard
-  if (auth.userId && path === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Check if the route is protected and user is not authenticated
+  if (!userId && isProtectedRoute(request)) {
+    return redirectToSignIn();
   }
 
   // For everything else, continue
