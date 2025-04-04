@@ -69,7 +69,20 @@ export const addTransaction = async (transaction: Omit<Transaction, 'id'>): Prom
   return response.json();
 };
 
-export const addExpense = async (expenseData: any) => {
+interface ExpenseData {
+  amount: number;
+  category: string;
+  date: string;
+  description?: string;
+}
+
+interface SavingsData {
+  amount: number;
+  date: string;
+  description?: string;
+}
+
+export const addExpense = async (expenseData: ExpenseData): Promise<ApiResponse<Transaction>> => {
   const response = await fetch(`${API_BASE_URL}/expenses`, {
     method: 'POST',
     headers: {
@@ -83,7 +96,7 @@ export const addExpense = async (expenseData: any) => {
   return response.json();
 };
 
-export const updateSavings = async (savingsData: any) => {
+export const updateSavings = async (savingsData: SavingsData): Promise<ApiResponse<Transaction>> => {
   const response = await fetch(`${API_BASE_URL}/savings`, {
     method: 'POST',
     headers: {

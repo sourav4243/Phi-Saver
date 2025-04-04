@@ -164,7 +164,7 @@ export default function Dashboard() {
             <Card className="mb-6 shadow-sm bg-black/50 border-green-500/20">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-4">
-                  <h3 className="text-lg font-bold text-white">Today's Saving Goal</h3>
+                  <h3 className="text-lg font-bold text-white">Today&apos;s Saving Goal</h3>
                   <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 flex items-center py-1 px-2 text-sm">
                     <i className="fas fa-calendar-day mr-2 text-green-400"></i>
                     Apr 4, 2025
