@@ -39,12 +39,12 @@ export default function RootLayout({
           >
             <Navbar />
             <SignedIn>
-              <main className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-950">
+              <main className="min-h-screen dark:bg-gradient-to-br dark:from-green-900 dark:via-black dark:to-green-950 bg-gradient-to-br from-green-50 via-white to-green-100">
                 {children}
               </main>
             </SignedIn>
             <SignedOut>
-              <main className="min-h-screen bg-black">
+              <main className="min-h-screen dark:bg-black bg-white">
                 {children}
               </main>
             </SignedOut>
