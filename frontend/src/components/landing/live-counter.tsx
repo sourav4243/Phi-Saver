@@ -8,7 +8,7 @@ export function LiveCounter() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCount((prev) => prev + 1);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
