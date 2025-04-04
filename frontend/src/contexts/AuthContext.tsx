@@ -3,8 +3,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useUser, useClerk } from "@clerk/nextjs";
 
+// Use Clerk's User type
 interface AuthContextType {
-  user: any | null;
+  user: ReturnType<typeof useUser>["user"];
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
