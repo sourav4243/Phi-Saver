@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import PhiModel from "@/model";
+import { PhiModel } from "@/model";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 
 export function PhiScene() {

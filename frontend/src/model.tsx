@@ -12,7 +12,7 @@ export function PhiModel({ followMouse = true }: PhiModelProps) {
   const group = useRef<THREE.Group>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
-  // Track mouse movement
+  // Track mouse movement 
   useEffect(() => {
     if (followMouse) {
       const handleMouseMove = (event: MouseEvent) => {
