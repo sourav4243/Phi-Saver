@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { ExpenseDialog } from './expense-dialog';
 import { SavingsDialog } from './savings-dialog';
 
@@ -213,9 +214,13 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="flex flex-col items-center">
                 <div className="mb-4 relative">
-                  <img
+                  <Image
                     src="https://public.readdy.ai/ai/img_res/a2444c8ee09dc353781231c07ac678d2.jpg"
                     alt="Young Dragon"
+                    width={64}
+                    height={64}
+                    quality={100}
+                    unoptimized
                     className="w-48 h-48 sm:w-64 sm:h-64 object-contain"
                   />
                 </div>

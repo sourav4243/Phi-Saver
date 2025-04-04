@@ -89,9 +89,9 @@ export function Testimonials() {
     setCurrentIndex((prevIndex) => (prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1))
   }, [testimonials.length])
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1))
-  }
+  }, [testimonials.length])
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index)
@@ -120,10 +120,7 @@ export function Testimonials() {
 
   // Auto-scroll for desktop
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide()
-    }, 5000)
-
+    const interval = setInterval(nextSlide, 5000)
     return () => clearInterval(interval)
   }, [nextSlide])
 

@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { Target, Trophy, TrendingUp, Sparkles } from "lucide-react"
 import { useEffect } from "react"
 import { Card } from "@/components/ui/card"

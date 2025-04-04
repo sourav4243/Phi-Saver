@@ -6,11 +6,66 @@ interface ApiResponse<T> {
   message: string;
 }
 
-export const fetchDashboardData = async () => {
+interface DashboardData {
+  level: number;
+  progress: number;
+  streak: number;
+  saved: number;
+  dailyGoal: {
+    target: number;
+    current: number;
+  };
+  transactions: Array<{
+    type: 'expense' | 'savings';
+    amount: number;
+    category: string;
+    date: string;
+  }>;
+}
+
+export const fetchDashboardData = async (): Promise<ApiResponse<DashboardData>> => {
   const response = await fetch(`${API_BASE_URL}/dashboard`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch dashboard data');
-  }
+  return response.json();
+};
+
+interface FinancialStats {
+  totalSavings: number;
+  monthlyExpenses: number;
+  savingsRate: number;
+  categories: Array<{
+    name: string;
+    amount: number;
+    percentage: number;
+  }>;
+}
+
+export const fetchFinancialStats = async (): Promise<ApiResponse<FinancialStats>> => {
+  const response = await fetch(`${API_BASE_URL}/stats`);
+  return response.json();
+};
+
+interface Transaction {
+  id: string;
+  type: 'expense' | 'savings';
+  amount: number;
+  category: string;
+  date: string;
+  description?: string;
+}
+
+export const fetchTransactions = async (): Promise<ApiResponse<Transaction[]>> => {
+  const response = await fetch(`${API_BASE_URL}/transactions`);
+  return response.json();
+};
+
+export const addTransaction = async (transaction: Omit<Transaction, 'id'>): Promise<ApiResponse<Transaction>> => {
+  const response = await fetch(`${API_BASE_URL}/transactions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(transaction),
+  });
   return response.json();
 };
 
@@ -57,5 +112,9 @@ export const sendChatMessage = async (message: string) => {
 };
 
 export async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
-  // ... existing code ...
+  const response = await fetch(`${API_BASE_URL}${url}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch data from ${url}`);
+  }
+  return response.json();
 }
