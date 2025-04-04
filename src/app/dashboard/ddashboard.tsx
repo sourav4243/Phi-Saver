@@ -243,6 +243,71 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Transactions History Card */}
+        <Card className="mt-6 shadow-sm bg-black/50 border-green-500/20">
+          <CardHeader>
+            <CardTitle className="text-white">Transaction History</CardTitle>
+            <CardDescription className="text-gray-400">View your recent expenses and savings</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Sample transactions - Replace with actual data from your backend */}
+              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <i className="fas fa-utensils text-red-400"></i>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-white">Food & Dining</h4>
+                    <p className="text-sm text-gray-400">Apr 3, 2024</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-red-400">-₹250</p>
+                  <p className="text-sm text-gray-400">Expense</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <i className="fas fa-briefcase text-green-400"></i>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-white">Salary</h4>
+                    <p className="text-sm text-gray-400">Apr 3, 2024</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-green-400">+₹2,500</p>
+                  <p className="text-sm text-gray-400">Savings</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <i className="fas fa-shopping-bag text-red-400"></i>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-white">Shopping</h4>
+                    <p className="text-sm text-gray-400">Apr 2, 2024</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-red-400">-₹1,200</p>
+                  <p className="text-sm text-gray-400">Expense</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button variant="outline" className="border-green-500/20 text-white hover:bg-green-500/10">
+              View All Transactions
+            </Button>
+          </CardFooter>
+        </Card>
+
         {/* Expense Dialog */}
         <ExpenseDialog 
           open={showExpenseDialog} 
