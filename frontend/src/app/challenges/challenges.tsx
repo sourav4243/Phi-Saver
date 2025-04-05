@@ -142,7 +142,7 @@ const ChallengesComponent: React.FC = () => {
         {/* Page Title and Filter Bar */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Financial Challenges</h1>
+            <h1 className="text-2xl text-white font-bold mb-1">Financial Challenges</h1>
             <p className="text-gray-600 dark:text-gray-400">Complete challenges to improve your financial health and earn rewards</p>
           </div>
           
@@ -244,7 +244,7 @@ const ChallengesComponent: React.FC = () => {
         {/* Active Challenges */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Active Challenges</h2>
+            <h2 className="text-xl text-white font-bold">Active Challenges</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
