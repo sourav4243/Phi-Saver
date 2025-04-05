@@ -207,14 +207,6 @@ const ChallengesComponent: React.FC = () => {
             <Button 
               variant="outline" 
               className="border-green-500/20 text-white hover:bg-green-500/10"
-              onClick={() => setShowFriendRequestsDialog(true)}
-            >
-              <Bell className="mr-2 h-4 w-4" />
-              Friend Requests
-            </Button>
-            <Button 
-              variant="outline" 
-              className="border-green-500/20 text-white hover:bg-green-500/10"
               onClick={() => setShowAddFriendsDialog(true)}
             >
               <UserPlus className="mr-2 h-4 w-4" />

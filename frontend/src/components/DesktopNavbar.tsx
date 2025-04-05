@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { Bell } from "lucide-react";
+import { Badge } from "./ui/badge";
+import { useState } from "react";
+import FriendRequestDialog from "./FriendRequestDialog";
+import { useFriendRequests } from "./FriendRequestContext";
 
 export default function DesktopNavbar() {
+  const [showFriendRequests, setShowFriendRequests] = useState(false);
+  const { friendRequestCount } = useFriendRequests();
+
   return (
     <div className="flex items-center space-x-6">
       <Link
@@ -13,13 +21,26 @@ export default function DesktopNavbar() {
       </Link>
 
       <SignedIn>
-        <Link
-          href="/dashboard"
-          className="text-sm font-medium text-white transition-colors hover:text-white"
-        >
-          Dashboard
-        </Link>
+        {friendRequestCount > 0 && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="relative text-white hover:bg-green-500/20"
+            onClick={() => setShowFriendRequests(true)}
+          >
+            <Bell className="h-5 w-5" />
+            <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 flex items-center justify-center p-0 text-xs">
+              {friendRequestCount}
+            </Badge>
+          </Button>
+        )}
+        
         <UserButton afterSignOutUrl="/" />
+
+        <FriendRequestDialog 
+          isOpen={showFriendRequests} 
+          onClose={() => setShowFriendRequests(false)} 
+        />
       </SignedIn>
 
       <SignedOut>

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/themeprovider";
 import Navbar from "@/components/Navbar";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ClientOnly, ChatButton, Footer } from '@/components/ClientOnly';
+import { FriendRequestProvider } from "@/components/FriendRequestContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,28 +38,30 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            <SignedIn>
-              <main className="min-h-screen dark:bg-gradient-to-br dark:from-green-900 dark:via-black dark:to-green-950 bg-gradient-to-br from-green-50 via-white to-green-100">
-                {children}
-              </main>
-            </SignedIn>
-            <SignedOut>
-              <main className="min-h-screen dark:bg-black bg-white">
-                {children}
-              </main>
-            </SignedOut>
-
-            {/* Client-side only components */}
-            <ClientOnly>
-              {/* Chat Button */}
-              <ChatButton />
-
-              {/* Footer - only for signed in users */}
+            <FriendRequestProvider>
+              <Navbar />
               <SignedIn>
-                <Footer />
+                <main className="min-h-screen dark:bg-gradient-to-br dark:from-green-900 dark:via-black dark:to-green-950 bg-gradient-to-br from-green-50 via-white to-green-100">
+                  {children}
+                </main>
               </SignedIn>
-            </ClientOnly>
+              <SignedOut>
+                <main className="min-h-screen dark:bg-black bg-white">
+                  {children}
+                </main>
+              </SignedOut>
+
+              {/* Client-side only components */}
+              <ClientOnly>
+                {/* Chat Button */}
+                <ChatButton />
+
+                {/* Footer - only for signed in users */}
+                <SignedIn>
+                  <Footer />
+                </SignedIn>
+              </ClientOnly>
+            </FriendRequestProvider>
           </ThemeProvider>
         </body>
       </html>
