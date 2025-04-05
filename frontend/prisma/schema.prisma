@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String               @id // Clerk user ID
+  name             String
+  email            String              @unique
+  avatarUrl        String?
+  currency         String              @default("INR")
+  level            Int                 @default(1)
+  exp              Int                 @default(0)
+  streakDays       Int                 @default(0)
+  totalSaved       Float               @default(0.0)
+  expenses         Expense[]
+  savings          Saving[]
+  petStatus        PetStatus?
+  challengeStatus  UserChallengeStatus[]
+  userAchievements UserAchievement[]
+  currencySetting  CurrencySetting?
+  createdChallenges Challenge[]        @relation("CreatedChallenges")
+}
+
+model Expense {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  amount    Float
+  category  String
+  date      DateTime
+  note      String?
+}
+
+model Saving {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  amount    Float
+  category  String
+  date      DateTime
+  note      String?
+}
+
+model PetStatus {
+  id              Int    @id @default(autoincrement())
+  user            User   @relation(fields: [userId], references: [id])
+  userId          String @unique
+  petType         String @default("Dragon")
+  level           Int    @default(1)
+  stage           Int    @default(1)
+  xp              Int    @default(0)
+  currentImageUrl String
+}
+
+model Challenge {
+  id            Int                   @id @default(autoincrement())
+  title         String
+  description   String
+  durationDays  Int
+  rewardAmount  Float
+  category      String
+  createdBy     User                  @relation("CreatedChallenges", fields: [createdById], references: [id])
+  createdById   String
+  participants  UserChallengeStatus[]
+}
+
+model UserChallengeStatus {
+  id               Int       @id @default(autoincrement())
+  challenge        Challenge @relation(fields: [challengeId], references: [id])
+  challengeId      Int
+  user             User      @relation(fields: [userId], references: [id])
+  userId           String
+  startDate        DateTime
+  progressDays     Int       @default(0)
+  isCompleted      Boolean   @default(false)
+  lastContinueDate DateTime?
+}
+
+model Achievement {
+  id          Int                @id @default(autoincrement())
+  name        String
+  description String
+  imageUrl    String
+  earnedBy    UserAchievement[]
+}
+
+model UserAchievement {
+  id             Int         @id @default(autoincrement())
+  user           User        @relation(fields: [userId], references: [id])
+  userId         String
+  achievement    Achievement @relation(fields: [achievementId], references: [id])
+  achievementId  Int
+  dateEarned     DateTime
+}
+
+model CurrencySetting {
+  id                Int     @id @default(autoincrement())
+  user              User    @relation(fields: [userId], references: [id])
+  userId            String  @unique
+  preferredCurrency String  @default("INR")
+  exchangeRateToInr Float   @default(1.0)
+}

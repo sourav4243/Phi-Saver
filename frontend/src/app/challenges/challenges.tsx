@@ -22,6 +22,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from '@radix-ui/react-select';
+import { Bell, UserPlus, Plus, Trophy, CalendarCheck, PiggyBank, LineChart, CreditCard, Lock, User, ArrowUp, ArrowDown } from "lucide-react";
 
 // Data interfaces
 interface Challenge {
@@ -34,8 +35,8 @@ interface Challenge {
   daysCompleted: number;
   daysRemaining: number;
   reward: number;
-  difficulty: 'easy' | 'medium' | 'hard';
   category: string;
+  lastCompletedDate?: string; // Date when the challenge was last completed
 }
 
 interface ChallengeStats {
@@ -57,7 +58,6 @@ const sampleChallenges: Challenge[] = [
     daysCompleted: 21,
     daysRemaining: 9,
     reward: 500,
-    difficulty: 'medium',
     category: 'savings'
   },
   {
@@ -70,7 +70,6 @@ const sampleChallenges: Challenge[] = [
     daysCompleted: 11,
     daysRemaining: 10,
     reward: 600,
-    difficulty: 'hard',
     category: 'spending'
   },
   {
@@ -83,7 +82,6 @@ const sampleChallenges: Challenge[] = [
     daysCompleted: 12,
     daysRemaining: 2,
     reward: 300,
-    difficulty: 'easy',
     category: 'budgeting'
   }
 ];
@@ -99,20 +97,66 @@ const ChallengesComponent: React.FC = () => {
   const { theme } = useTheme();
   const [showAddFriendsDialog, setShowAddFriendsDialog] = useState(false);
   const [showNewChallengeDialog, setShowNewChallengeDialog] = useState(false);
+  const [showFriendRequestsDialog, setShowFriendRequestsDialog] = useState(false);
   const [newChallenge, setNewChallenge] = useState({
     title: '',
     description: '',
     duration: '',
     reward: '',
-    difficulty: '',
     category: ''
   });
 
   // State for challenges and stats - replace with actual data fetching
   const [challenges, setChallenges] = useState<Challenge[]>(sampleChallenges);
   const [stats, setStats] = useState<ChallengeStats>(sampleStats);
+  
+  // Sample friend requests data - replace with actual data from your backend
+  const [friendRequests, setFriendRequests] = useState([
+    { id: '1', name: 'Priya Sharma', email: 'priya.sharma@example.com', date: '2023-04-01' },
+    { id: '2', name: 'Rahul Patel', email: 'rahul.patel@example.com', date: '2023-04-02' }
+  ]);
 
-  const handleNewChallengeChange = (field: string, value: string) => {
+  // Function to check if a challenge can be continued today
+  const canContinueChallenge = (challenge: Challenge): boolean => {
+    if (!challenge.lastCompletedDate) return true;
+    
+    const today = new Date();
+    const lastCompleted = new Date(challenge.lastCompletedDate);
+    
+    // Check if the last completion was on a different day
+    return today.getDate() !== lastCompleted.getDate() || 
+           today.getMonth() !== lastCompleted.getMonth() || 
+           today.getFullYear() !== lastCompleted.getFullYear();
+  };
+
+  // Function to handle continuing a challenge
+  const handleContinueChallenge = (challengeId: string) => {
+    setChallenges(prevChallenges => 
+      prevChallenges.map(challenge => {
+        if (challenge.id === challengeId) {
+          // Update the challenge with today's date as the last completed date
+          const updatedChallenge = {
+            ...challenge,
+            lastCompletedDate: new Date().toISOString(),
+            daysCompleted: challenge.daysCompleted + 1,
+            daysRemaining: challenge.daysRemaining - 1,
+            progress: Math.round(((challenge.daysCompleted + 1) / challenge.totalDays) * 100)
+          };
+          
+          // Update stats
+          setStats(prevStats => ({
+            ...prevStats,
+            totalExpEarned: Math.round(prevStats.totalExpEarned + challenge.reward / challenge.totalDays)
+          }));
+          
+          return updatedChallenge;
+        }
+        return challenge;
+      })
+    );
+  };
+
+  const handleNewChallengeChange = (field: 'title' | 'description' | 'duration' | 'reward' | 'category', value: string) => {
     setNewChallenge(prev => ({
       ...prev,
       [field]: value
@@ -129,9 +173,22 @@ const ChallengesComponent: React.FC = () => {
       description: '',
       duration: '',
       reward: '',
-      difficulty: '',
       category: ''
     });
+  };
+  
+  const handleAcceptFriendRequest = (requestId: string) => {
+    // Here you would typically send the acceptance to your backend
+    console.log('Accepting friend request:', requestId);
+    // Remove the accepted request from the list
+    setFriendRequests(friendRequests.filter(request => request.id !== requestId));
+  };
+  
+  const handleRejectFriendRequest = (requestId: string) => {
+    // Here you would typically send the rejection to your backend
+    console.log('Rejecting friend request:', requestId);
+    // Remove the rejected request from the list
+    setFriendRequests(friendRequests.filter(request => request.id !== requestId));
   };
 
   return (
@@ -150,16 +207,24 @@ const ChallengesComponent: React.FC = () => {
             <Button 
               variant="outline" 
               className="border-green-500/20 text-white hover:bg-green-500/10"
+              onClick={() => setShowFriendRequestsDialog(true)}
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Friend Requests
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-green-500/20 text-white hover:bg-green-500/10"
               onClick={() => setShowAddFriendsDialog(true)}
             >
-              <i className="fas fa-user-plus mr-2"></i>
+              <UserPlus className="mr-2 h-4 w-4" />
               Add Friends 
             </Button>
             <Button 
               className="bg-green-500 hover:bg-green-600"
               onClick={() => setShowNewChallengeDialog(true)}
             >
-              <i className="fas fa-plus mr-2"></i>
+              <Plus className="mr-2 h-4 w-4" />
               New Challenge
             </Button>
           </div>
@@ -172,7 +237,7 @@ const ChallengesComponent: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-black-400 mb-1">Active Challenges</p>
-                  <h3 className="text-2xl font-bold">{stats.activeChallenges}</h3>
+                  <h3 className="text-2xl font-bold">{Math.round(stats.activeChallenges)}</h3>
                   <div className="flex items-center mt-1 text-green-500">
                     <i className="fas fa-arrow-up mr-1 text-xs"></i>
                     <span className="text-sm">+2 from last month</span>
@@ -190,7 +255,7 @@ const ChallengesComponent: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-black-400 mb-1">Completed Challenges</p>
-                  <h3 className="text-2xl font-bold">{stats.completedChallenges}</h3>
+                  <h3 className="text-2xl font-bold">{Math.round(stats.completedChallenges)}</h3>
                   <div className="flex items-center mt-1 text-blue-500">
                     <i className="fas fa-trophy mr-1 text-xs"></i>
                     <span className="text-sm">+5 this quarter</span>
@@ -208,10 +273,10 @@ const ChallengesComponent: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-black-400 mb-1">Total Exp Earned</p>
-                  <h3 className="text-2xl font-bold">{stats.totalExpEarned}</h3>
+                  <h3 className="text-2xl font-bold">{Math.round(stats.totalExpEarned)}</h3>
                   <div className="flex items-center mt-1 text-purple-500">
                     <i className="fas fa-coins mr-1 text-xs"></i>
-                    <span className="text-sm">+₹200 this month</span>
+                    <span className="text-sm">+200 exp this month</span>
                   </div>
                 </div>
                 <div className="bg-purple-500 p-3 rounded-full">
@@ -226,7 +291,7 @@ const ChallengesComponent: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-black-400 mb-1">Current Streak</p>
-                  <h3 className="text-2xl font-bold">{stats.currentStreak} Days</h3>
+                  <h3 className="text-2xl font-bold">{Math.round(stats.currentStreak)} Days</h3>
                   <div className="flex items-center mt-1 text-amber-500">
                     <i className="fas fa-fire mr-1 text-xs"></i>
                     <span className="text-sm">Keep it up!</span>
@@ -281,8 +346,16 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                 </CardContent>
                 <CardFooter className="pt-0">
-                  <Button className="w-full bg-green-500 hover:bg-green-600">
-                    Continue Challenge
+                  <Button 
+                    className={`w-full ${canContinueChallenge(challenge) 
+                      ? 'bg-green-500 hover:bg-green-600' 
+                      : 'bg-gray-400 cursor-not-allowed'}`}
+                    onClick={() => handleContinueChallenge(challenge.id)}
+                    disabled={!canContinueChallenge(challenge)}
+                  >
+                    {canContinueChallenge(challenge) 
+                      ? 'Continue Challenge' 
+                      : 'Completed Today'}
                   </Button>
                 </CardFooter>
               </Card>
@@ -303,49 +376,49 @@ const ChallengesComponent: React.FC = () => {
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-amber-400 to-amber-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-trophy text-white text-2xl"></i>
+                    <Trophy className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Savings Master</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-blue-400 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-calendar-check text-white text-2xl"></i>
+                    <CalendarCheck className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">30-Day Streak</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-green-400 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-piggy-bank text-white text-2xl"></i>
+                    <PiggyBank className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Budget Pro</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-purple-400 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-chart-line text-white text-2xl"></i>
+                    <LineChart className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Investor</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-red-400 to-red-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-credit-card text-white text-2xl"></i>
+                    <CreditCard className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Debt Crusher</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-gray-400 to-gray-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-lock text-white text-2xl"></i>
+                    <Lock className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Locked</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-gray-400 to-gray-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-lock text-white text-2xl"></i>
+                    <Lock className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Locked</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="bg-gradient-to-br from-gray-400 to-gray-600 w-16 h-16 rounded-full flex items-center justify-center mb-2">
-                    <i className="fas fa-lock text-white text-2xl"></i>
+                    <Lock className="text-white w-8 h-8" />
                   </div>
                   <span className="text-sm text-center">Locked</span>
                 </div>
@@ -397,8 +470,9 @@ const ChallengesComponent: React.FC = () => {
                 <div className="flex items-center bg-amber-200 dark:bg-amber-450/20 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-amber-600">1</div>
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://public.readdy.ai/ai/img_res/fd05bbb9b7a4959e827e636e5b3d71f4.jpg" alt="User" />
-                    <AvatarFallback>RK</AvatarFallback>
+                    <AvatarFallback className="bg-amber-100 text-amber-600 flex items-center justify-center">
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-medium">Riya Kapoor</p>
@@ -406,8 +480,8 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">6,200 exp</p>
-                    <p className="text-xs text-green-600">
-                      <i className="fas fa-arrow-up mr-1"></i>
+                    <p className="text-xs text-green-600 flex items-center justify-end">
+                      <ArrowUp className="h-3 w-3 mr-1" />
                       <span>+2</span>
                     </p>
                   </div>
@@ -416,8 +490,9 @@ const ChallengesComponent: React.FC = () => {
                 <div className="flex items-center bg-gray-100 dark:bg-gray-300 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-gray-600 dark:text-gray-900">2</div>
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://public.readdy.ai/ai/img_res/0b889f0220baa6ce8d29622e90b4d06a.jpg" alt="User" />
-                    <AvatarFallback>AS</AvatarFallback>
+                    <AvatarFallback className="bg-blue-100 text-blue-600 flex items-center justify-center">
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-medium">Arjun Singh</p>
@@ -425,8 +500,8 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">5,800 exp</p>
-                    <p className="text-xs text-red-600">
-                      <i className="fas fa-arrow-down mr-1"></i>
+                    <p className="text-xs text-red-600 flex items-center justify-end">
+                      <ArrowDown className="h-3 w-3 mr-1" />
                       <span>-1</span>
                     </p>
                   </div>
@@ -435,8 +510,9 @@ const ChallengesComponent: React.FC = () => {
                 <div className="flex items-center bg-orange-50 dark:bg-orange-200 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-orange-600 dark:text-orange-400">3</div>
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://public.readdy.ai/ai/img_res/baf7f76cf7c04d1346a07fcd8ae60749.jpg" alt="User" />
-                    <AvatarFallback>PM</AvatarFallback>
+                    <AvatarFallback className="bg-orange-100 text-orange-600 flex items-center justify-center">
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-medium">Priya Mehta</p>
@@ -444,8 +520,8 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">5,500 exp</p>
-                    <p className="text-xs text-green-600">
-                      <i className="fas fa-arrow-up mr-1"></i>
+                    <p className="text-xs text-green-600 flex items-center justify-end">
+                      <ArrowUp className="h-3 w-3 mr-1" />
                       <span>+1</span>
                     </p>
                   </div>
@@ -454,8 +530,9 @@ const ChallengesComponent: React.FC = () => {
                 <div className="flex items-center bg-gray-50 dark:bg-gray-900/20 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-gray-500">4</div>
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://public.readdy.ai/ai/img_res/28e861b9519e9da04e7cddf68d668355.jpg" alt="User" />
-                    <AvatarFallback>YOU</AvatarFallback>
+                    <AvatarFallback className="bg-green-100 text-green-600 flex items-center justify-center">
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-medium">You</p>
@@ -463,8 +540,8 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">4,250 exp</p>
-                    <p className="text-xs text-green-600">
-                      <i className="fas fa-arrow-up mr-1"></i>
+                    <p className="text-xs text-green-600 flex items-center justify-end">
+                      <ArrowUp className="h-3 w-3 mr-1" />
                       <span>+2</span>
                     </p>
                   </div>
@@ -473,8 +550,9 @@ const ChallengesComponent: React.FC = () => {
                 <div className="flex items-center bg-blue-50 dark:bg-blue-100/60 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-gray-500 dark:text-gray-400">5</div>
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://public.readdy.ai/ai/img_res/40cbe39414ae224d40088a5fa8bdcf6d.jpg" alt="User" />
-                    <AvatarFallback>VK</AvatarFallback>
+                    <AvatarFallback className="bg-purple-100 text-purple-600 flex items-center justify-center">
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-medium">Vikram Kumar</p>
@@ -482,8 +560,8 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">3,800 exp</p>
-                    <p className="text-xs text-red-600">
-                      <i className="fas fa-arrow-down mr-1"></i>
+                    <p className="text-xs text-red-600 flex items-center justify-end">
+                      <ArrowDown className="h-3 w-3 mr-1" />
                       <span>-1</span>
                     </p>
                   </div>
@@ -593,10 +671,17 @@ const ChallengesComponent: React.FC = () => {
               <Input
                 id="duration"
                 type="number"
+                min="1"
                 className={`col-span-3 border-none ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} !rounded-button`}
                 placeholder="30"
                 value={newChallenge.duration}
-                onChange={(e) => handleNewChallengeChange('duration', e.target.value)}
+                onChange={(e) => {
+                  // Ensure only positive numbers are accepted
+                  const value = parseInt(e.target.value);
+                  if (value > 0 || e.target.value === '') {
+                    handleNewChallengeChange('duration', e.target.value);
+                  }
+                }}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -614,24 +699,6 @@ const ChallengesComponent: React.FC = () => {
                   onChange={(e) => handleNewChallengeChange('reward', e.target.value)}
                 />
               </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="difficulty" className="text-right font-medium">
-                Difficulty
-              </label>
-              <Select 
-                value={newChallenge.difficulty} 
-                onValueChange={(value) => handleNewChallengeChange('difficulty', value)}
-              >
-                <SelectTrigger className={`col-span-3 border-none ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} !rounded-button`}>
-                  <SelectValue placeholder="Select difficulty" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="easy">Easy</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="hard">Hard</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <label htmlFor="category" className="text-right font-medium">
@@ -666,6 +733,68 @@ const ChallengesComponent: React.FC = () => {
               className="bg-green-500 hover:bg-green-600 !rounded-button whitespace-nowrap cursor-pointer"
             >
               Create Challenge
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Friend Requests Dialog */}
+      <Dialog open={showFriendRequestsDialog} onOpenChange={setShowFriendRequestsDialog}>
+        <DialogContent className={`sm:max-w-[425px] w-[95%] ${theme === 'dark' ? 'bg-gray-900 text-white border-gray-800' : ''}`}>
+          <DialogHeader>
+            <DialogTitle>Friend Requests</DialogTitle>
+            <DialogDescription>
+              Accept or reject friend requests to connect with other users.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {friendRequests.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-gray-500 dark:text-gray-400">No pending friend requests</p>
+            </div>
+          ) : (
+            <div className="space-y-4 py-4">
+              {friendRequests.map((request) => (
+                <div key={request.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-4 mb-3 sm:mb-0">
+                    <Avatar>
+                      <AvatarFallback>{request.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{request.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{request.email}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">Requested on {new Date(request.date).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2 w-full sm:w-auto justify-end">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="text-red-500 border-red-500 hover:bg-red-500/10 flex-1 sm:flex-none"
+                      onClick={() => handleRejectFriendRequest(request.id)}
+                    >
+                      Reject
+                    </Button>
+                    <Button 
+                      size="sm"
+                      className="bg-green-500 hover:bg-green-600 flex-1 sm:flex-none"
+                      onClick={() => handleAcceptFriendRequest(request.id)}
+                    >
+                      Accept
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowFriendRequestsDialog(false)}
+              className="!rounded-button whitespace-nowrap cursor-pointer"
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
