@@ -108,7 +108,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen pt-16 pb-24">
+    <div className="min-h-screen pt-0 pb-24">
       <main className="max-w-[1440px] mx-auto px-2 sm:px-4">
         {/* User Level Card */}
         <Card className="mb-6 shadow-sm bg-black/50 border-green-500/20">
