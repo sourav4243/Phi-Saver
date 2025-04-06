@@ -366,7 +366,7 @@ const ChallengesComponent: React.FC = () => {
           <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Your Achievements</CardTitle>
-              <CardDescription>Badges and rewards you've earned</CardDescription>
+              <CardDescription>Badges and rewards you&apos;ve earned</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
@@ -431,7 +431,7 @@ const ChallengesComponent: React.FC = () => {
                         <i className="fas fa-piggy-bank text-green-600"></i>
                       </div>
                       <div>
-                        <p className="font-medium">Completed "No Spend Week"</p>
+                        <p className="font-medium">Completed &quot;No Spend Week&quot;</p>
                         <p className="text-sm text-gray-500">Avoided unnecessary purchases for 7 days</p>
                       </div>
                     </div>
@@ -444,7 +444,7 @@ const ChallengesComponent: React.FC = () => {
                         <i className="fas fa-chart-bar text-blue-600"></i>
                       </div>
                       <div>
-                        <p className="font-medium">Completed "Budget Master"</p>
+                        <p className="font-medium">Completed &quot;Budget Master&quot;</p>
                         <p className="text-sm text-gray-500">Stayed under budget for 14 days</p>
                       </div>
                     </div>
