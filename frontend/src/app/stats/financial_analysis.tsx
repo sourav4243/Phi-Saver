@@ -40,7 +40,8 @@ export function FinancialAnalysis() {
   const [stats, setStats] = useState<MonthlyStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
+  // Filter state is set up but not currently used in filtering logic
+  const [_, setFilter] = useState('all');
 
   useEffect(() => {
     fetchStats();

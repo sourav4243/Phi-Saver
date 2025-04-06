@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(_request: Request) {
+export async function GET(_: Request) {
   try {
     const { userId } = await auth();
 
