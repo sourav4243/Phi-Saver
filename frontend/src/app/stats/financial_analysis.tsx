@@ -66,7 +66,7 @@ export function FinancialAnalysis() {
   // Get category icon based on category
   const getCategoryIcon = (category: string) => {
     const categoryLower = category.toLowerCase();
-    
+
     if (categoryLower.includes('food') || categoryLower.includes('dining') || categoryLower.includes('restaurant')) {
       return 'fa-utensils';
     } else if (categoryLower.includes('shopping') || categoryLower.includes('retail')) {
@@ -93,7 +93,7 @@ export function FinancialAnalysis() {
   // Get category color based on category
   const getCategoryColor = (category: string) => {
     const categoryLower = category.toLowerCase();
-    
+
     if (categoryLower.includes('food') || categoryLower.includes('dining') || categoryLower.includes('restaurant')) {
       return 'blue';
     } else if (categoryLower.includes('shopping') || categoryLower.includes('retail')) {
@@ -268,7 +268,7 @@ export function FinancialAnalysis() {
                   const color = getCategoryColor(category.category);
                   const icon = getCategoryIcon(category.category);
                   const percentage = (category.amount / stats.currentMonth.totalExpenses) * 100;
-                  
+
                   return (
                     <div key={index} className="space-y-2">
                       <div className="flex items-center">
@@ -392,7 +392,7 @@ export function FinancialAnalysis() {
                         </td>
                         <td className="py-2 sm:py-3 px-2 sm:px-4 text-right">
                           <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                            <i className="fas fa-ellipsis-h text-xs"></i>
+                            <i className="fas fa-ellipsis-h text-xs "></i>
                           </Button>
                         </td>
                       </tr>
@@ -422,3 +422,4 @@ export function FinancialAnalysis() {
     </div>
   );
 }
+
