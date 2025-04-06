@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 interface Expense {
   amount: string;
@@ -24,6 +25,7 @@ interface Expense {
 export function ExpenseDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [newExpense, setNewExpense] = useState<Expense>({
     amount: '',
@@ -39,17 +41,49 @@ export function ExpenseDialog({ open, onOpenChange }: { open: boolean; onOpenCha
     }));
   };
 
-  const handleSaveExpense = () => {
-    // TODO: Implement expense saving logic
-    console.log('Saving expense:', newExpense);
-    onOpenChange(false);
-    // Reset form
-    setNewExpense({
-      amount: '',
-      category: '',
-      date: new Date().toISOString().split('T')[0],
-      note: '',
-    });
+  const handleSaveExpense = async () => {
+    // Validate required fields
+    if (!newExpense.amount || !newExpense.category || !newExpense.date) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch('/api/expenses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newExpense),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save expense');
+      }
+
+      toast.success("Expense saved successfully!");
+      
+      // Reset form
+      setNewExpense({
+        amount: '',
+        category: '',
+        date: new Date().toISOString().split('T')[0],
+        note: '',
+      });
+      
+      // Close dialog
+      onOpenChange(false);
+      
+      // Trigger a custom event to notify the dashboard to refresh transactions
+      window.dispatchEvent(new CustomEvent('transactionAdded'));
+    } catch (error) {
+      console.error('Error saving expense:', error);
+      toast.error('Failed to save expense. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -75,6 +109,7 @@ export function ExpenseDialog({ open, onOpenChange }: { open: boolean; onOpenCha
                 placeholder="0.00"
                 value={newExpense.amount}
                 onChange={(e) => handleExpenseChange('amount', e.target.value)}
+                required
               />
             </div>
           </div>
@@ -133,6 +168,7 @@ export function ExpenseDialog({ open, onOpenChange }: { open: boolean; onOpenCha
               value={newExpense.date}
               onChange={(e) => handleExpenseChange('date', e.target.value)}
               className={`col-span-3 border-none ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} !rounded-button`}
+              required
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -153,14 +189,16 @@ export function ExpenseDialog({ open, onOpenChange }: { open: boolean; onOpenCha
             variant="outline" 
             onClick={() => onOpenChange(false)} 
             className="!rounded-button whitespace-nowrap cursor-pointer"
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button 
             onClick={handleSaveExpense} 
             className={`${isDarkMode ? 'bg-green-800 hover:bg-green-900' : 'bg-green-600 hover:bg-green-700'} !rounded-button whitespace-nowrap cursor-pointer`}
+            disabled={isSubmitting}
           >
-            Save Expense
+            {isSubmitting ? 'Saving...' : 'Save Expense'}
           </Button>
         </DialogFooter>
       </DialogContent>

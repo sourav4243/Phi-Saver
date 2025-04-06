@@ -7,6 +7,8 @@ import Navbar from "@/components/Navbar";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ClientOnly, ChatButton, Footer } from '@/components/ClientOnly';
 import { FriendRequestProvider } from "@/components/FriendRequestContext";
+import UserSync from "@/components/UserSync";
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +43,7 @@ export default function RootLayout({
             <FriendRequestProvider>
               <Navbar />
               <SignedIn>
+                <UserSync />
                 <main className="min-h-screen dark:bg-gradient-to-br dark:from-green-900 dark:via-black dark:to-green-950 bg-gradient-to-br from-green-50 via-white to-green-100">
                   {children}
                 </main>
@@ -61,6 +64,8 @@ export default function RootLayout({
                   <Footer />
                 </SignedIn>
               </ClientOnly>
+
+              <Toaster position="top-right" />
             </FriendRequestProvider>
           </ThemeProvider>
         </body>

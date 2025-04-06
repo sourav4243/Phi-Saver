@@ -24,6 +24,8 @@ model User {
   userAchievements UserAchievement[]
   currencySetting  CurrencySetting?
   createdChallenges Challenge[]        @relation("CreatedChallenges")
+  sentFriendRequests FriendRequest[]   @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
 }
 
 model Expense {
@@ -104,4 +106,17 @@ model CurrencySetting {
   userId            String  @unique
   preferredCurrency String  @default("INR")
   exchangeRateToInr Float   @default(1.0)
+}
+
+model FriendRequest {
+  id          Int      @id @default(autoincrement())
+  sender      User     @relation("SentFriendRequests", fields: [senderId], references: [id])
+  senderId    String
+  receiver    User     @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  receiverId  String
+  status      String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([senderId, receiverId])
 }

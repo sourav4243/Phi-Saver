@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "next-themes";
+import { toast } from "sonner";
 
 interface Savings {
   amount: string;
@@ -23,6 +24,7 @@ interface SavingsDialogProps {
 
 export function SavingsDialog({ open, onOpenChange }: SavingsDialogProps) {
   const { theme } = useTheme();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newSavings, setNewSavings] = useState<Savings>({
     amount: '',
     category: '',
@@ -37,10 +39,49 @@ export function SavingsDialog({ open, onOpenChange }: SavingsDialogProps) {
     }));
   };
 
-  const handleSave = () => {
-    // Here you would typically send the data to your backend
-    console.log('Saving:', newSavings);
-    onOpenChange(false);
+  const handleSave = async () => {
+    // Validate required fields
+    if (!newSavings.amount || !newSavings.category || !newSavings.date) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch('/api/savings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newSavings),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save savings');
+      }
+
+      toast.success("Savings recorded successfully!");
+      
+      // Reset form
+      setNewSavings({
+        amount: '',
+        category: '',
+        date: new Date().toISOString().split('T')[0],
+        note: ''
+      });
+      
+      // Close dialog
+      onOpenChange(false);
+      
+      // Trigger a custom event to notify the dashboard to refresh transactions
+      window.dispatchEvent(new CustomEvent('transactionAdded'));
+    } catch (error) {
+      console.error('Error saving savings:', error);
+      toast.error("Failed to save savings. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -64,6 +105,7 @@ export function SavingsDialog({ open, onOpenChange }: SavingsDialogProps) {
                 className={`pl-8 ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200'}`}
                 value={newSavings.amount}
                 onChange={(e) => handleChange('amount', e.target.value)}
+                required
               />
             </div>
           </div>
@@ -109,6 +151,7 @@ export function SavingsDialog({ open, onOpenChange }: SavingsDialogProps) {
               className={theme === 'dark' ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200'}
               value={newSavings.date}
               onChange={(e) => handleChange('date', e.target.value)}
+              required
             />
           </div>
           <div className="grid gap-2">
@@ -127,14 +170,16 @@ export function SavingsDialog({ open, onOpenChange }: SavingsDialogProps) {
             variant="outline"
             onClick={() => onOpenChange(false)}
             className={theme === 'dark' ? 'border-gray-700 text-white hover:bg-gray-800' : 'border-gray-200 hover:bg-gray-100'}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             className="bg-green-500 hover:bg-green-600 text-white"
+            disabled={isSubmitting}
           >
-            Save Savings
+            {isSubmitting ? 'Saving...' : 'Save Savings'}
           </Button>
         </div>
       </DialogContent>

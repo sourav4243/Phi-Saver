@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { ExpenseDialog } from './expense-dialog';
 import { SavingsDialog } from './savings-dialog';
+import { TransactionHistoryDialog } from './transaction-history-dialog';
+import { toast } from "sonner";
 
 // Import the EChartsWrapper component with SSR disabled
 const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'), {
@@ -17,10 +19,140 @@ const EChartsWrapper = dynamic(() => import('@/components/charts/EChartsWrapper'
   loading: () => <div className="w-full h-[400px] bg-gray-800/20 animate-pulse rounded-md"></div>
 });
 
+// Define interfaces for user and pet data
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl: string | null;
+  level: number;
+  exp: number;
+  levelProgress: number;
+  streakDays: number;
+  totalSaved: number;
+  petStatus: PetData | null;
+}
+
+interface PetData {
+  id: number;
+  petType: string;
+  level: number;
+  stage: number;
+  xp: number;
+  evolutionProgress: number;
+  imageUrl: string;
+}
+
+interface Transaction {
+  id: number;
+  type: 'expense' | 'saving';
+  amount: number;
+  category: string;
+  date: string;
+  note: string;
+}
+
 export default function Dashboard() {
   const { theme } = useTheme();
   const [showExpenseDialog, setShowExpenseDialog] = useState(false);
   const [showSavingsDialog, setShowSavingsDialog] = useState(false);
+  const [showTransactionHistoryDialog, setShowTransactionHistoryDialog] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [petData, setPetData] = useState<PetData | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [monthlySavings, setMonthlySavings] = useState<number>(0);
+  const [currentMonth, setCurrentMonth] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isTransactionsLoading, setIsTransactionsLoading] = useState(true);
+
+  // Fetch user and pet data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch user data
+        const userResponse = await fetch('/api/user');
+        if (!userResponse.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const userResult = await userResponse.json();
+        setUserData(userResult.user);
+        
+        // Fetch pet data
+        const petResponse = await fetch('/api/pet');
+        if (!petResponse.ok) {
+          throw new Error('Failed to fetch pet data');
+        }
+        const petResult = await petResponse.json();
+        setPetData(petResult.pet);
+        
+        // Fetch monthly savings
+        const savingsResponse = await fetch('/api/monthly-savings');
+        if (!savingsResponse.ok) {
+          throw new Error('Failed to fetch monthly savings');
+        }
+        const savingsResult = await savingsResponse.json();
+        setMonthlySavings(savingsResult.totalMonthlySavings);
+        setCurrentMonth(savingsResult.month);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toast.error('Failed to load dashboard data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  const fetchTransactions = async () => {
+    try {
+      setIsTransactionsLoading(true);
+      const response = await fetch('/api/transactions');
+      if (!response.ok) {
+        throw new Error('Failed to fetch transactions');
+      }
+      const result = await response.json();
+      setTransactions(result.transactions || []);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      toast.error('Failed to load transaction history');
+    } finally {
+      setIsTransactionsLoading(false);
+    }
+  };
+
+  // Fetch transaction history
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  // Add event listener for transaction updates
+  useEffect(() => {
+    const handleTransactionAdded = () => {
+      fetchTransactions();
+      // Also refresh monthly savings when a transaction is added
+      fetch('/api/monthly-savings')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch monthly savings');
+          return response.json();
+        })
+        .then(data => {
+          setMonthlySavings(data.totalMonthlySavings);
+          setCurrentMonth(data.month);
+        })
+        .catch(error => {
+          console.error('Error refreshing monthly savings:', error);
+        });
+    };
+
+    window.addEventListener('transactionAdded', handleTransactionAdded);
+
+    return () => {
+      window.removeEventListener('transactionAdded', handleTransactionAdded);
+    };
+  }, []);
 
   // Create chart options
   const chartOptions = {
@@ -107,6 +239,47 @@ export default function Dashboard() {
     ]
   };
 
+  // Get pet level title based on level
+  const getPetLevelTitle = (level: number) => {
+    if (level <= 3) return "Young";
+    if (level <= 6) return "Teen";
+    if (level <= 9) return "Adult";
+    return "Elder";
+  };
+
+  // Get category icon based on category
+  const getCategoryIcon = (category: string) => {
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes('food') || categoryLower.includes('dining') || categoryLower.includes('restaurant')) {
+      return 'fa-utensils';
+    } else if (categoryLower.includes('shopping') || categoryLower.includes('retail')) {
+      return 'fa-shopping-bag';
+    } else if (categoryLower.includes('transport') || categoryLower.includes('travel')) {
+      return 'fa-car';
+    } else if (categoryLower.includes('entertainment') || categoryLower.includes('movie') || categoryLower.includes('game')) {
+      return 'fa-film';
+    } else if (categoryLower.includes('salary') || categoryLower.includes('income') || categoryLower.includes('job')) {
+      return 'fa-briefcase';
+    } else if (categoryLower.includes('gift') || categoryLower.includes('bonus')) {
+      return 'fa-gift';
+    } else if (categoryLower.includes('health') || categoryLower.includes('medical')) {
+      return 'fa-heartbeat';
+    } else if (categoryLower.includes('education') || categoryLower.includes('school') || categoryLower.includes('college')) {
+      return 'fa-graduation-cap';
+    } else if (categoryLower.includes('bills') || categoryLower.includes('utilities')) {
+      return 'fa-file-invoice';
+    } else {
+      return 'fa-money-bill';
+    }
+  };
+
+  // Format date to a readable string
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
   return (
     <div className="min-h-screen pt-0 pb-24">
       <main className="max-w-[1440px] mx-auto px-2 sm:px-4">
@@ -116,24 +289,31 @@ export default function Dashboard() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center">
                 <div className="bg-green-500 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold mr-4">
-                  12
+                  {isLoading ? "..." : userData?.level || 1}
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-xl font-bold text-white">Level 12 Explorer</h2>
+                  <h2 className="text-lg sm:text-xl font-bold text-white">
+                    {isLoading ? "Loading..." : `Level ${userData?.level || 1} Explorer`}
+                  </h2>
                   <div className="mt-1">
-                    <Progress value={65} className="h-2 w-36 sm:w-48" />
-                    <span className="text-xs text-gray-400">65% to Level 13</span>
+                    <Progress 
+                      value={isLoading ? 0 : userData?.levelProgress || 0} 
+                      className="h-2 w-36 sm:w-48" 
+                    />
+                    <span className="text-xs text-gray-400">
+                      {isLoading ? "Loading..." : `${userData?.levelProgress || 0}% to Level ${(userData?.level || 1) + 1}`}
+                    </span>
                   </div>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
                 <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/20 flex items-center py-1 sm:py-2 px-2 sm:px-3 text-sm">
                   <i className="fas fa-fire mr-2 text-amber-400"></i>
-                  7 Day Streak
+                  {isLoading ? "Loading..." : `${userData?.streakDays || 0} Day Streak`}
                 </Badge>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 flex items-center py-1 sm:py-2 px-2 sm:px-3 text-sm">
                   <i className="fas fa-piggy-bank mr-2 text-green-400"></i>
-                  ₹700 Saved
+                  {isLoading ? "Loading..." : `₹${Math.floor(monthlySavings)} Saved in ${currentMonth}`}
                 </Badge>
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                   <Button 
@@ -167,7 +347,7 @@ export default function Dashboard() {
                   <h3 className="text-lg font-bold text-white">Today&apos;s Saving Goal</h3>
                   <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 flex items-center py-1 px-2 text-sm">
                     <i className="fas fa-calendar-day mr-2 text-green-400"></i>
-                    Apr 4, 2025
+                    {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </Badge>
                 </div>
                 <p className="text-gray-400 mb-3">Save ₹50 today to keep your streak going!</p>
@@ -213,19 +393,27 @@ export default function Dashboard() {
                 <CardDescription className="text-gray-400">Level up your pet by saving more!</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center">
-                <div className="mb-4 relative">
-                  <Image
-                    src="https://public.readdy.ai/ai/img_res/a2444c8ee09dc353781231c07ac678d2.jpg"
-                    alt="Young Dragon"
-                    width={64}
-                    height={64}
-                    quality={100}
-                    unoptimized
-                    className="w-48 h-48 sm:w-64 sm:h-64 object-contain"
-                  />
-                </div>
-                <h3 className="text-xl font-bold text-center mb-2 text-white">Young Dragon</h3>
-                <p className="text-gray-400 text-center mb-4">Level 2 • 2/3 Evolution</p>
+                {isLoading ? (
+                  <div className="w-48 h-48 sm:w-64 sm:h-64 bg-gray-800/20 animate-pulse rounded-md mb-4"></div>
+                ) : (
+                  <div className="mb-4 relative">
+                    <Image
+                      src={petData?.imageUrl || "/assets/levels/level1_dragon.jpg"}
+                      alt={`${getPetLevelTitle(petData?.level || 1)} ${petData?.petType || "Dragon"}`}
+                      width={64}
+                      height={64}
+                      quality={100}
+                      unoptimized
+                      className="w-48 h-48 sm:w-64 sm:h-64 object-contain"
+                    />
+                  </div>
+                )}
+                <h3 className="text-xl font-bold text-center mb-2 text-white">
+                  {isLoading ? "Loading..." : `${getPetLevelTitle(petData?.level || 1)} ${petData?.petType || "Dragon"}`}
+                </h3>
+                <p className="text-gray-400 text-center mb-4">
+                  {isLoading ? "Loading..." : `Level ${petData?.level || 1} • ${petData?.evolutionProgress || 0}% Evolution`}
+                </p>
                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 sm:p-4 w-full mb-6">
                   <p className="text-amber-300 flex items-center text-sm">
                     <i className="fas fa-lightbulb text-amber-400 mr-2"></i>
@@ -254,59 +442,67 @@ export default function Dashboard() {
             <CardDescription className="text-gray-400">View your recent expenses and savings</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {/* Sample transactions - Replace with actual data from your backend */}
-              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <i className="fas fa-utensils text-red-400"></i>
+            {isTransactionsLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50 animate-pulse">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gray-700/50"></div>
+                      <div>
+                        <div className="h-5 w-24 bg-gray-700/50 rounded mb-2"></div>
+                        <div className="h-4 w-20 bg-gray-700/50 rounded"></div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="h-5 w-16 bg-gray-700/50 rounded mb-2"></div>
+                      <div className="h-4 w-12 bg-gray-700/50 rounded"></div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium text-white">Food & Dining</h4>
-                    <p className="text-sm text-gray-400">Apr 3, 2024</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium text-red-400">-₹250</p>
-                  <p className="text-sm text-gray-400">Expense</p>
-                </div>
+                ))}
               </div>
-
-              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <i className="fas fa-briefcase text-green-400"></i>
+            ) : transactions.length > 0 ? (
+              <div className="space-y-4">
+                {transactions.map((transaction) => (
+                  <div key={transaction.id} className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        transaction.type === 'expense' ? 'bg-red-500/20' : 'bg-green-500/20'
+                      }`}>
+                        <i className={`fas ${getCategoryIcon(transaction.category)} ${
+                          transaction.type === 'expense' ? 'text-red-400' : 'text-green-400'
+                        }`}></i>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-white">{transaction.category}</h4>
+                        <p className="text-sm text-gray-400">{formatDate(transaction.date)}</p>
+                        {transaction.note && (
+                          <p className="text-xs text-gray-500 mt-1">{transaction.note}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={`font-medium ${
+                        transaction.type === 'expense' ? 'text-red-400' : 'text-green-400'
+                      }`}>
+                        {transaction.type === 'expense' ? '-' : '+'}₹{Math.floor(transaction.amount)}
+                      </p>
+                      <p className="text-sm text-gray-400 capitalize">{transaction.type}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium text-white">Salary</h4>
-                    <p className="text-sm text-gray-400">Apr 3, 2024</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium text-green-400">+₹2,500</p>
-                  <p className="text-sm text-gray-400">Savings</p>
-                </div>
+                ))}
               </div>
-
-              <div className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50 border border-gray-700/50">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <i className="fas fa-shopping-bag text-red-400"></i>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-white">Shopping</h4>
-                    <p className="text-sm text-gray-400">Apr 2, 2024</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium text-red-400">-₹1,200</p>
-                  <p className="text-sm text-gray-400">Expense</p>
-                </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-400">No transactions found. Start by logging an expense or adding savings!</p>
               </div>
-            </div>
+            )}
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button variant="outline" className="border-green-500/20 text-white hover:bg-green-500/10">
+            <Button 
+              variant="outline" 
+              className="border-green-500/20 text-white hover:bg-green-500/10"
+              onClick={() => setShowTransactionHistoryDialog(true)}
+            >
               View All Transactions
             </Button>
           </CardFooter>
@@ -322,6 +518,12 @@ export default function Dashboard() {
         <SavingsDialog 
           open={showSavingsDialog} 
           onOpenChange={setShowSavingsDialog} 
+        />
+
+        {/* Transaction History Dialog */}
+        <TransactionHistoryDialog
+          open={showTransactionHistoryDialog}
+          onOpenChange={setShowTransactionHistoryDialog}
         />
       </main>
     </div>
