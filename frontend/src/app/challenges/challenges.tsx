@@ -1,13 +1,15 @@
 "use client";
 
 
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
@@ -20,9 +22,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+// import { Label } from "@/components/ui/label";
 import { Separator } from '@radix-ui/react-select';
-import { Bell, UserPlus, Plus, Trophy, CalendarCheck, PiggyBank, LineChart, CreditCard, Lock, User, ArrowUp, ArrowDown } from "lucide-react";
+// import { Bell, UserPlus, Plus, Trophy, CalendarCheck, PiggyBank, LineChart, CreditCard, Lock, User, ArrowUp, ArrowDown } from "lucide-react";
+import { UserPlus, Plus, Trophy, CalendarCheck, PiggyBank, LineChart, CreditCard, Lock, User, ArrowUp, ArrowDown } from "lucide-react";
+
 
 // Data interfaces
 interface Challenge {
