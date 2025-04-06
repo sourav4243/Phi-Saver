@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: Request) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -45,10 +45,10 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -70,4 +70,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-} 
+}
