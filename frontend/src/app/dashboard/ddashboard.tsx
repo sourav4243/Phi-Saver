@@ -44,7 +44,7 @@ interface PetData {
 }
 
 interface Transaction {
-  id: number;
+  id: string | number;
   type: 'expense' | 'saving';
   amount: number;
   category: string;
@@ -70,7 +70,7 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        
+
         // Fetch user data
         const userResponse = await fetch('/api/user');
         if (!userResponse.ok) {
@@ -78,7 +78,7 @@ export default function Dashboard() {
         }
         const userResult = await userResponse.json();
         setUserData(userResult.user);
-        
+
         // Fetch pet data
         const petResponse = await fetch('/api/pet');
         if (!petResponse.ok) {
@@ -86,7 +86,7 @@ export default function Dashboard() {
         }
         const petResult = await petResponse.json();
         setPetData(petResult.pet);
-        
+
         // Fetch monthly savings
         const savingsResponse = await fetch('/api/monthly-savings');
         if (!savingsResponse.ok) {
@@ -102,7 +102,7 @@ export default function Dashboard() {
         setIsLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -250,7 +250,7 @@ export default function Dashboard() {
   // Get category icon based on category
   const getCategoryIcon = (category: string) => {
     const categoryLower = category.toLowerCase();
-    
+
     if (categoryLower.includes('food') || categoryLower.includes('dining') || categoryLower.includes('restaurant')) {
       return 'fa-utensils';
     } else if (categoryLower.includes('shopping') || categoryLower.includes('retail')) {
@@ -296,9 +296,9 @@ export default function Dashboard() {
                     {isLoading ? "Loading..." : `Level ${userData?.level || 1} Explorer`}
                   </h2>
                   <div className="mt-1">
-                    <Progress 
-                      value={isLoading ? 0 : userData?.levelProgress || 0} 
-                      className="h-2 w-36 sm:w-48" 
+                    <Progress
+                      value={isLoading ? 0 : userData?.levelProgress || 0}
+                      className="h-2 w-36 sm:w-48"
                     />
                     <span className="text-xs text-gray-400">
                       {isLoading ? "Loading..." : `${userData?.levelProgress || 0}% to Level ${(userData?.level || 1) + 1}`}
@@ -316,15 +316,15 @@ export default function Dashboard() {
                   {isLoading ? "Loading..." : `₹${Math.floor(monthlySavings)} Saved in ${currentMonth}`}
                 </Badge>
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="flex-1 sm:flex-none border-green-500/20 text-white hover:bg-green-500/10 text-sm"
                     onClick={() => setShowExpenseDialog(true)}
                   >
                     <i className="fas fa-plus-circle mr-2"></i>
                     Log Expense
                   </Button>
-                  <Button 
+                  <Button
                     className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-sm"
                     onClick={() => setShowSavingsDialog(true)}
                   >
@@ -498,8 +498,8 @@ export default function Dashboard() {
             )}
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-green-500/20 text-white hover:bg-green-500/10"
               onClick={() => setShowTransactionHistoryDialog(true)}
             >
@@ -509,15 +509,15 @@ export default function Dashboard() {
         </Card>
 
         {/* Expense Dialog */}
-        <ExpenseDialog 
-          open={showExpenseDialog} 
-          onOpenChange={setShowExpenseDialog} 
+        <ExpenseDialog
+          open={showExpenseDialog}
+          onOpenChange={setShowExpenseDialog}
         />
 
         {/* Savings Dialog */}
-        <SavingsDialog 
-          open={showSavingsDialog} 
-          onOpenChange={setShowSavingsDialog} 
+        <SavingsDialog
+          open={showSavingsDialog}
+          onOpenChange={setShowSavingsDialog}
         />
 
         {/* Transaction History Dialog */}

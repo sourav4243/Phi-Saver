@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface Transaction {
-  id: number;
+  id: string | number;
   type: 'expense' | 'saving';
   amount: number;
   category: string;
@@ -49,7 +49,7 @@ export function TransactionHistoryDialog({ open, onOpenChange }: TransactionHist
   // Get category icon based on category
   const getCategoryIcon = (category: string) => {
     const categoryLower = category.toLowerCase();
-    
+
     if (categoryLower.includes('food') || categoryLower.includes('dining') || categoryLower.includes('restaurant')) {
       return 'fa-utensils';
     } else if (categoryLower.includes('shopping') || categoryLower.includes('retail')) {
@@ -147,4 +147,4 @@ export function TransactionHistoryDialog({ open, onOpenChange }: TransactionHist
       </DialogContent>
     </Dialog>
   );
-} 
+}

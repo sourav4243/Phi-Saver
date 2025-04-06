@@ -109,7 +109,7 @@ const ChallengesComponent: React.FC = () => {
   // State for challenges and stats - replace with actual data fetching
   const [challenges, setChallenges] = useState<Challenge[]>(sampleChallenges);
   const [stats, setStats] = useState<ChallengeStats>(sampleStats);
-  
+
   // Sample friend requests data - replace with actual data from your backend
   const [friendRequests, setFriendRequests] = useState([
     { id: '1', name: 'Priya Sharma', email: 'priya.sharma@example.com', date: '2023-04-01' },
@@ -119,19 +119,19 @@ const ChallengesComponent: React.FC = () => {
   // Function to check if a challenge can be continued today
   const canContinueChallenge = (challenge: Challenge): boolean => {
     if (!challenge.lastCompletedDate) return true;
-    
+
     const today = new Date();
     const lastCompleted = new Date(challenge.lastCompletedDate);
-    
+
     // Check if the last completion was on a different day
-    return today.getDate() !== lastCompleted.getDate() || 
-           today.getMonth() !== lastCompleted.getMonth() || 
+    return today.getDate() !== lastCompleted.getDate() ||
+           today.getMonth() !== lastCompleted.getMonth() ||
            today.getFullYear() !== lastCompleted.getFullYear();
   };
 
   // Function to handle continuing a challenge
   const handleContinueChallenge = (challengeId: string) => {
-    setChallenges(prevChallenges => 
+    setChallenges(prevChallenges =>
       prevChallenges.map(challenge => {
         if (challenge.id === challengeId) {
           // Update the challenge with today's date as the last completed date
@@ -142,13 +142,13 @@ const ChallengesComponent: React.FC = () => {
             daysRemaining: challenge.daysRemaining - 1,
             progress: Math.round(((challenge.daysCompleted + 1) / challenge.totalDays) * 100)
           };
-          
+
           // Update stats
           setStats(prevStats => ({
             ...prevStats,
             totalExpEarned: Math.round(prevStats.totalExpEarned + challenge.reward / challenge.totalDays)
           }));
-          
+
           return updatedChallenge;
         }
         return challenge;
@@ -176,14 +176,14 @@ const ChallengesComponent: React.FC = () => {
       category: ''
     });
   };
-  
+
   const handleAcceptFriendRequest = (requestId: string) => {
     // Here you would typically send the acceptance to your backend
     console.log('Accepting friend request:', requestId);
     // Remove the accepted request from the list
     setFriendRequests(friendRequests.filter(request => request.id !== requestId));
   };
-  
+
   const handleRejectFriendRequest = (requestId: string) => {
     // Here you would typically send the rejection to your backend
     console.log('Rejecting friend request:', requestId);
@@ -202,17 +202,17 @@ const ChallengesComponent: React.FC = () => {
             <h1 className="text-2xl text-white font-bold mb-1">Financial Challenges</h1>
             <p className="text-gray-600 dark:text-gray-400">Complete challenges to improve your financial health and earn rewards</p>
           </div>
-          
+
           <div className="flex flex-wrap items-center gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-green-500/20 text-white hover:bg-green-500/10"
               onClick={() => setShowAddFriendsDialog(true)}
             >
               <UserPlus className="mr-2 h-4 w-4" />
-              Add Friends 
+              Add Friends
             </Button>
-            <Button 
+            <Button
               className="bg-green-500 hover:bg-green-600"
               onClick={() => setShowNewChallengeDialog(true)}
             >
@@ -241,7 +241,7 @@ const ChallengesComponent: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="shadow-sm bg-white border-green-500">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
@@ -259,7 +259,7 @@ const ChallengesComponent: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="shadow-sm bg-white border-green-500">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
@@ -277,7 +277,7 @@ const ChallengesComponent: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="shadow-sm bg-white border-green-500">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
@@ -338,15 +338,15 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                 </CardContent>
                 <CardFooter className="pt-0">
-                  <Button 
-                    className={`w-full ${canContinueChallenge(challenge) 
-                      ? 'bg-green-500 hover:bg-green-600' 
+                  <Button
+                    className={`w-full ${canContinueChallenge(challenge)
+                      ? 'bg-green-500 hover:bg-green-600'
                       : 'bg-gray-400 cursor-not-allowed'}`}
                     onClick={() => handleContinueChallenge(challenge.id)}
                     disabled={!canContinueChallenge(challenge)}
                   >
-                    {canContinueChallenge(challenge) 
-                      ? 'Continue Challenge' 
+                    {canContinueChallenge(challenge)
+                      ? 'Continue Challenge'
                       : 'Completed Today'}
                   </Button>
                 </CardFooter>
@@ -415,9 +415,9 @@ const ChallengesComponent: React.FC = () => {
                   <span className="text-sm text-center">Locked</span>
                 </div>
               </div>
-              
+
               <Separator className="my-6" />
-              
+
               <div>
                 <h3 className="font-medium mb-3">Recent Achievements</h3>
                 <div className="space-y-4">
@@ -433,7 +433,7 @@ const ChallengesComponent: React.FC = () => {
                     </div>
                     <span className="text-sm text-gray-500">2 days ago</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="bg-blue-100 p-2 rounded-full mr-3">
@@ -450,7 +450,7 @@ const ChallengesComponent: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Leaderboard */}
           <Card className="shadow-sm">
             <CardHeader>
@@ -478,7 +478,7 @@ const ChallengesComponent: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center bg-gray-100 dark:bg-gray-300 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-gray-600 dark:text-gray-900">2</div>
                   <Avatar className="h-10 w-10 mr-3">
@@ -498,7 +498,7 @@ const ChallengesComponent: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center bg-orange-50 dark:bg-orange-200 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-orange-600 dark:text-orange-400">3</div>
                   <Avatar className="h-10 w-10 mr-3">
@@ -518,7 +518,7 @@ const ChallengesComponent: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center bg-gray-50 dark:bg-gray-900/20 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-gray-500">4</div>
                   <Avatar className="h-10 w-10 mr-3">
@@ -538,7 +538,7 @@ const ChallengesComponent: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center bg-blue-50 dark:bg-blue-100/60 p-3 rounded-lg">
                   <div className="w-8 text-center font-bold text-gray-500 dark:text-gray-400">5</div>
                   <Avatar className="h-10 w-10 mr-3">
@@ -559,7 +559,7 @@ const ChallengesComponent: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-6">
                 <Button variant="outline" className="w-full !rounded-button whitespace-nowrap cursor-pointer">
                   View Full Leaderboard
@@ -696,8 +696,8 @@ const ChallengesComponent: React.FC = () => {
               <label htmlFor="category" className="text-right font-medium">
                 Category
               </label>
-              <Select 
-                value={newChallenge.category} 
+              <Select
+                value={newChallenge.category}
                 onValueChange={(value) => handleNewChallengeChange('category', value)}
               >
                 <SelectTrigger className={`col-span-3 border-none ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} !rounded-button`}>
@@ -739,7 +739,7 @@ const ChallengesComponent: React.FC = () => {
               Accept or reject friend requests to connect with other users.
             </DialogDescription>
           </DialogHeader>
-          
+
           {friendRequests.length === 0 ? (
             <div className="py-8 text-center">
               <p className="text-gray-500 dark:text-gray-400">No pending friend requests</p>
@@ -759,15 +759,15 @@ const ChallengesComponent: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2 w-full sm:w-auto justify-end">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       className="text-red-500 border-red-500 hover:bg-red-500/10 flex-1 sm:flex-none"
                       onClick={() => handleRejectFriendRequest(request.id)}
                     >
                       Reject
                     </Button>
-                    <Button 
+                    <Button
                       size="sm"
                       className="bg-green-500 hover:bg-green-600 flex-1 sm:flex-none"
                       onClick={() => handleAcceptFriendRequest(request.id)}
@@ -779,7 +779,7 @@ const ChallengesComponent: React.FC = () => {
               ))}
             </div>
           )}
-          
+
           <DialogFooter>
             <Button
               variant="outline"
