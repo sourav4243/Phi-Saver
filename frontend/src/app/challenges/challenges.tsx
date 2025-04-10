@@ -189,7 +189,7 @@ const ChallengesComponent: React.FC = () => {
   };
 
   const handleRejectFriendRequest = (requestId: string) => {
-    // Here you would typically send the rejection to your backend
+    // Here we would typically send the rejection to your backend
     console.log('Rejecting friend request:', requestId);
     // Remove the rejected request from the list
     setFriendRequests(friendRequests.filter(request => request.id !== requestId));
