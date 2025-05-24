@@ -161,7 +161,7 @@ For the Flask backend, you can deploy to platforms like:
 
 ## Contributors
 
-- [Sourav](https://github.com/sourav4243)
+- [Sourav](https://github.com/sourav4243) - [souravkumar18835@gmail.com](mailto:souravkumar18835@gmail.com)
 - [Raunak](https://github.com/raunak6531) - [raunak6531@gmail.com](mailto:raunak6531@gmail.com)
 - [Ranjith](https://github.com/ranjith2120) - [2009ranjitharun@gmail.com](mailto:2009ranjitharun@gmail.com)
 
