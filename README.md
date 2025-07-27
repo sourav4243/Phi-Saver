@@ -25,7 +25,7 @@ A gamified savings application designed to encourage millennials and Gen Z to bu
 - **shadcn/ui**: Component library for building accessible and customizable UI components.
 - **Clerk**: Authentication and user management system.
 - **Flask**: Python backend for API endpoints and business logic.
-- **SQLite**: Lightweight database for storing user data.
+- **PostgreSQL**: Database for storing user data.
 - **Google Gemini 2.0 Flash**: Advanced AI model for powering the intelligent chatbot.
 - **ECharts**: Interactive JavaScript charting library for data visualization.
 - **TypeScript**: Type-safe JavaScript for better developer experience and code quality.
